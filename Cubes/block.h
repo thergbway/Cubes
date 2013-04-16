@@ -11,9 +11,12 @@ private:
 	char brightness_right;
 	char brightness_front;
 	char brightness_back;
+	bool transparent;
 	//functions
 public:
-	void setAir(void);
-	void setDirt(void);
+	void setAir();
+	void setDirt();
+	void setGrass();
 	char getType();
+	bool isTransparent();
 };

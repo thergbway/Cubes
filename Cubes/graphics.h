@@ -32,9 +32,19 @@ class VBOBox{
 private:
 	GameMain* gameMain;
 	QGLBuffer* VBO;
-	int pointsToDraw;
+	QGLBuffer* TBO;//texture buffer object like VBO
+	GLuint* texturesPtr;
+
+	//количества точек
+	int pointsOfDirtToDraw;
+	int pointsOfGrassTopToDraw;
+	int pointsOfGrassSideToDraw;
+	//offsets
+	int offsetOfDirt;
+	int offsetOfGrassTop;
+	int offsetOfGrassSide;
 public:
 	void draw();
-	VBOBox(int chNumX,int chNumZ,GameMain* gameMain);
+	VBOBox(int chNumX,int chNumZ,GameMain* gameMain,GLuint* texuresArrayPtr);
 	~VBOBox();
 };

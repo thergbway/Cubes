@@ -5,9 +5,9 @@
 Settings::Settings(GameMain* gameMainPtr)
 {
 	gameMain=gameMainPtr;
-	spawnPointX=15*CUBE_SIZE;
+	spawnPointX=100*CUBE_SIZE;
 	spawnPointY=130*CUBE_SIZE;
-	spawnPointZ=15*CUBE_SIZE;
+	spawnPointZ=500*CUBE_SIZE;
 	maxWalkSpeed=10*CUBE_SIZE;
 	sensitivity=0.1;
 	mouseReleased=false;

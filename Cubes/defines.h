@@ -16,10 +16,11 @@ const int CUBE_SIZE=256;//def 256
 //blocks
 const int AIR=1;//def 1
 const int DIRT=2;//def 2
+const int GRASS=3;//def 3
 //graphics
 const int MIN_WIDTH=400;//def 600
 const int MIN_HEIGHT=400;//def 600
-const int CHUNKS_TO_DRAW=13;//def 13 йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
+const int CHUNKS_TO_DRAW=7;//def 13 йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
 const double PARAMETER_LEN=1.0;//def 100.0 оюпюлерп дкъ бшвхякемхъ рнвйх, йсдю ялнрпхр хцпнй
 
 const int TEXTURES_COUNT=50;//def. 50 люйяхлюкэмне вхякн рейярсп

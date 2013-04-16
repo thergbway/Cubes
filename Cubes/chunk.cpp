@@ -95,6 +95,9 @@ Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
 			for(int y=0;y<matrix[x][z];++y){
 				blocks[x][y][z].setDirt();
 			}
+			blocks[x][matrix[x][z]-1][z].setGrass();//верхний слой трава
+			blocks[x][150][z].setGrass();//test
+			blocks[x][140][z].setDirt();//test
 		}
 	}
 }
@@ -114,3 +117,21 @@ int Chunk::getId(){
 bool Chunk::updateChunk(){
 	return 0;
 }
+
+BlockTransparencyAround Chunk::getBlockTransparencyAround(int blX,int blY,int blZ){
+	return BlockTransparencyAround(
+		blY<BLOCK_HEIGHT_COUNT-1?isTransparent(blX,blY+1,blZ):true,
+		blY>0?isTransparent(blX,blY-1,blZ):false,
+		blX>0?isTransparent(blX-1,blY,blZ):true,
+		blX<BLOCK_COUNT-1?isTransparent(blX+1,blY,blZ):true,
+		blZ<BLOCK_COUNT-1?isTransparent(blX,blY,blZ+1):true,
+		blZ>0?isTransparent(blX,blY,blZ-1):true
+		);
+}
+
+bool Chunk::isTransparent(int blX,int blY,int blZ){
+	return blocks[blX][blY][blZ].isTransparent();
+}
+
+BlockTransparencyAround::BlockTransparencyAround(bool _top,bool _down,bool _left,bool _right,bool _front,bool _back)
+	:top(_top),down(_down),left(_left),right(_right),front(_front),back(_back){}
