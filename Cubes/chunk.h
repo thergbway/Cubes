@@ -5,9 +5,12 @@
 #include "world.h"
 #include "block.h"
 #include "defines.h"
+#include "worldlayerholder.h"
 
 class World;
 class Block;
+class LayerTransfer;
+class WorldLayerHolder;
 
 class Chunk
 {
@@ -23,7 +26,7 @@ public:
 	Block blocks[BLOCK_COUNT][BLOCK_HEIGHT_COUNT][BLOCK_COUNT];
 	//functions
 public:
-	Chunk(World* worldPtr, int coordX, int coordZ, int id);
+	Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder, int coordX, int coordZ, int id);
 	void* operator new(size_t) throw(std::bad_alloc);
 	void operator delete(void*);
 	int getCoordX();

@@ -2,22 +2,25 @@
 #include "gameMain.h"
 #include "chunk.h"
 #include "defines.h"
+#include "blocktransparencyaround.h"
+#include "worldlayerholder.h"
 
 class GameMain;
 class Chunk;
 class BlockTransparencyAround;
+class WorldLayerHolder;
 
 class World
 {
 	//members
 private:
 	GameMain* gameMain;
+	WorldLayerHolder* worldLayerHolder;
 	Chunk* chunks[CHUNKS_COUNT][CHUNKS_COUNT];
 	bool chunkUpdateMatrix[CHUNKS_COUNT][CHUNKS_COUNT];//совместная собственность World и Graphics
 				//-World ставит единички, Graphics их убирает
 	//functions
 	int getNewChunkId();
-	int random(int min,int max,int seed, int x,int z);
 public:
 	World(GameMain* gameMainPtr);
 	int getChunkCoordX(int chNumX,int chNumZ);
@@ -29,15 +32,4 @@ public:
 	void setVBOForChunkCreated(int chNumX,int chNumZ);//ставит в матрице апдейтов для данного чанка 0
 	void updateWorld();//обновляем мир-создаем новые чанки,
 						//перераспределяем их, обновляем
-};
-
-class BlockTransparencyAround{//прозрачность вокруг блока
-public:
-	bool top;
-	bool down;
-	bool left;
-	bool right;
-	bool front;
-	bool back;
-	BlockTransparencyAround(bool top,bool down,bool left,bool right,bool front,bool back);
 };

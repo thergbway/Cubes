@@ -58,6 +58,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_graphics.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="blocktransparencyaround.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="worldlayerholder.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Generated Files">
@@ -123,6 +129,12 @@
     <ClInclude Include="vector3d.h">
       <Filter>.h</Filter>
     </ClInclude>
+    <ClInclude Include="blocktransparencyaround.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="worldlayerholder.h">
+      <Filter>.h</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graphics.h">
@@ -134,5 +146,10 @@
     <CustomBuild Include="kmcontroller.h">
       <Filter>.h</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_INFO.txt">
+      <Filter>.h</Filter>
+    </None>
   </ItemGroup>
 </Project>

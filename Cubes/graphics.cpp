@@ -66,6 +66,7 @@ void Graphics::resizeGL(int nWidth, int nHeight){
 };
 
 void Graphics::paintGL(){
+	qDebug()<<"graphics:paintGL";
 	//обновим VBOBoxMap в новую newVBOBoxMap, если нужно, создадим новые VBOBox, удалим старые VBOBox
 	//копируем существующие нужные VBOBox в новый map
 	std::map<const int,VBOBox*> newVBOBoxMap;
@@ -87,16 +88,23 @@ void Graphics::paintGL(){
 	VBOBoxMap.clear();
 
 	//создаем новые VBOBox
+	int VBOCreatedTEST=0;
 	for(int i=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; i<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++i){
 		for(int j=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; j<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++j){
 			int currId=gameMain->world->getChunkId(i,j);
 			if(newVBOBoxMap.count(currId) == 0){
 				newVBOBoxMap[currId]= new VBOBox(i,j,gameMain,textures);
+				++VBOCreatedTEST;
+				qDebug()<<"new VBOBox"<<VBOCreatedTEST<<"of"
+					<<(((CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW)-
+					((CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2))*
+					(((CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW)-
+					((CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2));
 				gameMain->world->setVBOForChunkCreated(i,j);
 			}
 		}
 	}
-
+	qDebug()<<"stopped creating VBOBox";
 	//заполняем старую карту новой
 	VBOBoxMap=newVBOBoxMap;
 

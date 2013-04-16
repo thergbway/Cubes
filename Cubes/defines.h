@@ -12,6 +12,7 @@ const QString LOADING_SPLASH_SCREEN_NAME="loading_splash_screen.png";
 const int MAX_STRING_LEN_FOR_ARRAYS=200;//def.200. гЮДЮЕР ПЮГЛЕП ЛЮЯЯХБЮ ДКЪ МЮГБЮМХЪ ОСРХ РЕЙЯРСПШ. мСФМН ДКЪ МЕЙ. ОПЕНАПЮГНБЮМХИ
 //world numbers
 const int CHUNKS_COUNT=65; //def 65(31) йнк-бн вюмйнб он ндмни ярнпнме, ре бяецн ху CHUNK_COUNT*CHUNK_COUNT
+const int BLOCK_CHAINED_COUNT=17;//def 4097 тнплскю 2*2^X+1 йнкхвеярбн яжеокеммшу(аег ьбнб) акнйнб
 const int BLOCK_COUNT=17;//def 17(15) йнк-бн вюмйнб он ндмни ярнпнме, ре бяецн ху BLOCK_COUNT*BLOCK_COUNT*BLOCK_HEIGHT_COUNT
 const int BLOCK_HEIGHT_COUNT=128;//def 128(256)
 const int CUBE_SIZE=256;//def 256
@@ -24,7 +25,7 @@ const int SAND=5;//def 5
 //graphics
 const int MIN_WIDTH=400;//def 600
 const int MIN_HEIGHT=400;//def 600
-const int CHUNKS_TO_DRAW=51;//def 13 йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
+const int CHUNKS_TO_DRAW=31;//def 51(13) йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
 const double PARAMETER_LEN=1.0;//def 100.0 оюпюлерп дкъ бшвхякемхъ рнвйх, йсдю ялнрпхр хцпнй
 //graphics-textures
 const int TEXTURES_COUNT=50;//def. 50 люйяхлюкэмне вхякн рейярсп
@@ -35,8 +36,11 @@ const int STONE_TEX_INDEX=3;//def. 3. ял. бшье
 const int SAND_TEX_INDEX=4;//def. 4. ял бшье
 //chunks generator
 //types of landscape
+	//йнмярюмрш пюгкхвмшу цемепюрнпнб ял б яннрберярбсчыху тюикюу
 const int TYPE1=1;//random landscape that is less smoothed
 const int TYPE2=2;//simple sinus landscape
-const int CHOSE_LANDSCAPE=TYPE2;//current landscape
+const int TYPE3=3;//real landscape
+const int CHOSE_LANDSCAPE=TYPE3;//current landscape
+const int SEED=355234;//seed. Defines landscape
 //math
 const double PI=3.14159265;//def 3.14159265

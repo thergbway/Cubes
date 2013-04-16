@@ -10,7 +10,7 @@
 bool Chunk::alloc_map[CHUNKS_COUNT*CHUNKS_COUNT];//для динамического выделения памяти
 unsigned char Chunk::pool[CHUNKS_COUNT*CHUNKS_COUNT*sizeof(Chunk)];//для динамического выделения памяти
 
-Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
+Chunk::Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder,int _coordX, int _coordZ, int _id)
 {
 	//тут ничего не должно быть- инициализируем все в if
 	if(CHOSE_LANDSCAPE==TYPE1){//random landscape that is less smoothed
@@ -143,6 +143,31 @@ Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
 				blocks[x][matrix[x][z]-1][z].setGrass();//верхний слой трава
 			}
 		}
+	}
+	if(CHOSE_LANDSCAPE==TYPE3){
+		world=worldPtr;
+		coordX=_coordX;
+		coordZ=_coordZ;
+		id=_id;
+
+		//creating chunk
+		//filling with air
+		for(int x=0; x<BLOCK_COUNT; ++x){
+			for (int z=0; z<BLOCK_COUNT; ++z){
+				for(int y=0; y<BLOCK_HEIGHT_COUNT; ++y){
+					blocks[x][y][z].setAir();
+				}
+			}
+		}
+		//getting LayerTransfer object
+		LayerTransfer layerTransfer;
+		worldLayerHolder->updateLayerTransferForChunk(_coordX,_coordZ,layerTransfer);
+
+		//filling with stone
+		for(int x=0; x<BLOCK_COUNT; ++x)
+			for(int z=0; z<BLOCK_COUNT; ++z)
+				for(int y=0; y<layerTransfer.stoneLayer[x][z]; ++y)
+					blocks[x][y][z].setSand();
 	}
 	//тут ничего не должно быть- инициализируем все в if
 }

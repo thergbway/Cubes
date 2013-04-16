@@ -5,6 +5,8 @@
 #include "gameMain.h"
 #include "defines.h"
 
+#pragma comment(linker, "/stack:200000000")//необходимо увеличить стек
+
 int main(int argc,char* argv[])
 {
 	QApplication app(argc,argv);

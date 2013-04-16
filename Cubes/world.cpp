@@ -3,11 +3,12 @@
 #include "world.h"
 #include "gameMain.h"
 #include "defines.h"
+#include "worldlayerholder.h"
 
 World::World(GameMain* gameMainPtr)
+	:gameMain(gameMainPtr)
 {
-	gameMain=gameMainPtr;
-
+	worldLayerHolder=new WorldLayerHolder(gameMainPtr);
 	//пусть главный чанк в точке (0;0)
 	const int mainChX=0;
 	const int mainChZ=0;
@@ -15,7 +16,7 @@ World::World(GameMain* gameMainPtr)
 	//создаем мир с нужными координатами
 	for(int x=0; x<CHUNKS_COUNT; ++x){
 		for(int z=0; z<CHUNKS_COUNT; ++z){
-			chunks[x][z]=new Chunk(this,mainChX + x*BLOCK_COUNT*CUBE_SIZE,mainChZ + z*BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+			chunks[x][z]=new Chunk(this,worldLayerHolder,mainChX + x*BLOCK_COUNT*CUBE_SIZE,mainChZ + z*BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
 		}
 	}
 
@@ -80,7 +81,7 @@ void World::updateWorld(){
 				for(int j=0; j<CHUNKS_COUNT; ++j){
 					chunks[i][j]=newChunks[i][j];
 					if(chunks[i][j]==nullptr){
-						chunks[i][j]=new Chunk(this,mainChX+i*BLOCK_COUNT*CUBE_SIZE,mainChZ+j*BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+						chunks[i][j]=new Chunk(this,worldLayerHolder,mainChX+i*BLOCK_COUNT*CUBE_SIZE,mainChZ+j*BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
 						chunkUpdateMatrix[i][j]=true;
 					}
 				}
@@ -100,13 +101,6 @@ void World::updateWorld(){
 int World::getNewChunkId(){
 	static int chunksCounter=0;
 	return ++chunksCounter;
-}
-
-int World::random(int min,int max,int seed,int x,int z){
-	int n=x+z*57+seed;
-	n=(n<<13)^n;
-	int nn=(n*(n*n*60493+19990303)+1376312589)&0x7fffffff;
-	return (((2-(nn/1073741824))*100)%(max-min+1)+min);//from min to max
 }
 
 int World::getChunkCoordX(int chNumX,int chNumZ){
@@ -147,6 +141,3 @@ void World::setVBOForChunkCreated(int chNumX,int chNumZ){
 Chunk* World::getChunkPointer(int chNumX,int chNumZ){
 	return chunks[chNumX][chNumZ];
 }
-
-BlockTransparencyAround::BlockTransparencyAround(bool _top,bool _down,bool _left,bool _right,bool _front,bool _back)
-	:top(_top),down(_down),left(_left),right(_right),front(_front),back(_back){}
