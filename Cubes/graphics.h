@@ -4,6 +4,7 @@
 #include <map>
 #include "vector3d.h"
 #include "gameMain.h"
+#include "defines.h"
 
 class GameMain;
 class VBOBox;
@@ -15,6 +16,7 @@ class Graphics : public QGLWidget
 private:
 	GameMain* gameMain;
 	std::map<const int,VBOBox*> VBOBoxMap;
+	GLuint textures[TEXTURES_COUNT];
 	//functions
 public:
 	Graphics(GameMain* gameMainPtr,QWidget *parent = 0);
@@ -23,11 +25,11 @@ protected:
 	void resizeGL(int width, int height);
 	void paintGL();
 private:
+	void loadAllTextures();
 };
 
 class VBOBox{
 private:
-	unsigned int colorFORTEST;
 	GameMain* gameMain;
 	QGLBuffer* VBO;
 	int pointsToDraw;

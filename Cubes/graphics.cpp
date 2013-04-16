@@ -1,13 +1,16 @@
 #pragma once
+#pragma comment(lib,"glaux.lib")
+#include <gl/GLAux.h>
 #include <QtOpenGL/QtOpenGL>
 #include <gl/GLU.h>
 #include <QGLWidget>
+#include <QDebug>
+#include <QString>
 #include <QGLFormat>
 #include <stdlib.h>
 #include <crtdbg.h>
 #include <vector>
 #include <map>
-#include "defines.h"
 #include "graphics.h"
 #include "gameMain.h"
 
@@ -41,6 +44,9 @@ void Graphics::initializeGL(){
 	//glEnable(GL_LIGHT0);//источник 0
 	//glEnable(GL_COLOR_MATERIAL) ;// добавить цветные материалы
 	glEnable(GL_CULL_FACE);//показывать только внешние поверхности
+
+	loadAllTextures();//создадим текстуры
+	glEnable(GL_TEXTURE_2D);//включим текстуры
 
 	//включим сглаживание
 	//для мультисэмплинга
@@ -97,8 +103,57 @@ void Graphics::paintGL(){
 	}
 }
 
+void Graphics::loadAllTextures(){
+	//формируем адреса текстур
+	QString textureDirtAdress=GAME_DIRECTORY;
+	QString textureGrassTopAdress=GAME_DIRECTORY;
+	QString textureGrassSideAdress=GAME_DIRECTORY;
+	textureDirtAdress.append(TEXTURE_DIRT_NAME);
+	textureGrassTopAdress.append(TEXTURE_GRASS_TOP_NAME);
+	textureGrassSideAdress.append(TEXTURE_GRASS_SIDE_NAME);
+	//создадим массивы для преобразования
+	wchar_t textureDirtAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureGrassTopAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureGrassSideAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	textureDirtAdress.toWCharArray(textureDirtAdressFinalArray);
+	textureGrassTopAdress.toWCharArray(textureGrassTopAdressFinalArray);
+	textureGrassSideAdress.toWCharArray(textureGrassSideAdressFinalArray);
+
+	// Загрузка текстур
+	AUX_RGBImageRec *textureDirt;
+	AUX_RGBImageRec *textureGrassTop;
+	AUX_RGBImageRec *textureGrassSide;
+	textureDirt = auxDIBImageLoad(textureDirtAdressFinalArray);
+	textureGrassTop = auxDIBImageLoad(textureGrassTopAdressFinalArray);
+	textureGrassSide = auxDIBImageLoad(textureGrassSideAdressFinalArray);
+
+	// Выделение индексов текстур
+	glGenTextures(TEXTURES_COUNT, &textures[0]);
+
+	//загружаем текстуру DIRT
+	glBindTexture(GL_TEXTURE_2D, textures[DIRT_TEX_INDEX]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, textureDirt->sizeX, textureDirt->sizeY, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, textureDirt->data);
+
+	//загружаем текстуру GRASS_TOP
+	glBindTexture(GL_TEXTURE_2D, textures[GRASS_TOP_TEX_INDEX]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassTop->sizeX, textureGrassTop->sizeY, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, textureGrassTop->data);
+
+	//загружаем текстуру GRASS_SIDE
+	glBindTexture(GL_TEXTURE_2D, textures[GRASS_SIDE_TEX_INDEX]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassSide->sizeX, textureGrassSide->sizeY, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, textureGrassSide->data);
+
+}
+
 VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain){
-	colorFORTEST=rand()%256;
 	gameMain=_gameMain;
 
 	Chunk* chunkPtr=gameMain->world->getChunkPointer(chNumX,chNumZ);
@@ -157,9 +212,16 @@ VBOBox::~VBOBox(){
 
 void VBOBox::draw(){
  	glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
  	VBO->bind();
- 	glColor3ub(0,colorFORTEST,0);
+ 	glColor3ub(0,240,0);
  	glVertexPointer ( 3, GL_INT, 0, NULL );
  	glDrawArrays(GL_QUADS, 0, pointsToDraw);
+
+	//glTexCoordPointer ( 2, GL_FLOAT, sizeof(TVertex), &tverts.v[0] ); 
+	//glVertexPointer ( 3, GL_FLOAT, sizeof(Vertex), &verts.v[0] ); 
+	//glDrawArrays ( GL_TRIANGLES, 0, VertexCount );
+
+	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
  	glDisableClientState(GL_VERTEX_ARRAY);
 }
