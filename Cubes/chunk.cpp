@@ -7,6 +7,9 @@
 #include "world.h"
 #include "defines.h"
 
+bool Chunk::alloc_map[CHUNKS_COUNT*CHUNKS_COUNT];//для динамического выделения памяти
+unsigned char Chunk::pool[CHUNKS_COUNT*CHUNKS_COUNT*sizeof(Chunk)];//для динамического выделения памяти
+
 Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
 {
 	//тут ничего не должно быть- инициализируем все в if
@@ -132,7 +135,6 @@ Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
 				int blZ=coordZ/CUBE_SIZE+j;
 				matrix[i][j]=MIN_DIRT+A1+A1*sin(2*PI/T1*blZ+B1)+A2+A2*sin(2*PI/T2*blX+B2);
 			}
-
 		for(int x=0; x<BLOCK_COUNT; ++x){
 			for(int z=0; z<BLOCK_COUNT; ++z){
 				for(int y=0;y<matrix[x][z];++y){
@@ -143,6 +145,30 @@ Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
 		}
 	}
 	//тут ничего не должно быть- инициализируем все в if
+}
+
+void* Chunk::operator new(size_t) throw(std::bad_alloc){
+	for(int i=0; i<CHUNKS_COUNT*CHUNKS_COUNT; ++i){
+		if(!alloc_map[i]){
+			alloc_map[i]=true;//mark as in use
+			return pool+i*sizeof(Chunk);
+		}
+	}
+	//if space has not been found
+	qDebug()<<"No more free memory to allocate from pool. See implementation of class Chunk. Throwing std::bad_alloc.";
+	throw std::bad_alloc();
+}
+
+void Chunk::operator delete(void* ptr){
+	if(!ptr){
+		qDebug()<<"function Chunk::operator delete was called with NULL parameter. Check for error.";
+		return;
+	}
+	//вычислим номер блока из пула
+	unsigned long long block=(unsigned long long) ptr- (unsigned long long)pool;
+	block /= sizeof(Chunk);
+	//mark it free
+	alloc_map[block]=false;
 }
 
 int Chunk::getCoordX(){

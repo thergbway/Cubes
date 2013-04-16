@@ -1,6 +1,8 @@
 #pragma once
 #include <math.h>
 #include "gameMain.h"
+#include <stdlib.h>
+#include <QDebug>
 
 GameMain::GameMain(QMainWindow* _mainWin)
 {

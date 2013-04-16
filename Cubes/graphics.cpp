@@ -74,14 +74,9 @@ void Graphics::paintGL(){
 			int currId=gameMain->world->getChunkId(i,j);
 			bool needToUpdate=gameMain->world->isChunkUpdated(i,j);
 			if(!needToUpdate && VBOBoxMap.count(currId)==1){
-				//просто скопируем
+				//просто переместим
 				newVBOBoxMap[currId]=(VBOBoxMap.find(currId))->second;
 				VBOBoxMap.erase(currId);
-			}
-			else{
-				//иначе создадим новый
-				newVBOBoxMap[currId]= new VBOBox(i,j,gameMain,textures);
-				gameMain->world->setVBOForChunkCreated(i,j);
 			}
 		}
 	}
@@ -91,7 +86,18 @@ void Graphics::paintGL(){
 	}
 	VBOBoxMap.clear();
 
-	//заполняем его новым
+	//создаем новые VBOBox
+	for(int i=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; i<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++i){
+		for(int j=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; j<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++j){
+			int currId=gameMain->world->getChunkId(i,j);
+			if(newVBOBoxMap.count(currId) == 0){
+				newVBOBoxMap[currId]= new VBOBox(i,j,gameMain,textures);
+				gameMain->world->setVBOForChunkCreated(i,j);
+			}
+		}
+	}
+
+	//заполняем старую карту новой
 	VBOBoxMap=newVBOBoxMap;
 
 	//ТЕПЕРЬ РИСУЕМ МИР
@@ -957,22 +963,20 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	offsetOfStone=offsetOfGrassSide+pointsOfGrassSideToDraw;
 	offsetOfSand=offsetOfStone+pointsOfStoneToDraw;
 
-	VBO=new QGLBuffer(QGLBuffer::VertexBuffer);
-	VBO->setUsagePattern( QGLBuffer::StaticDraw );
-	VBO->create();
-	VBO->bind();
-	VBO->allocate((void *)&verticesFinal[0],verticesFinal.size()*sizeof(GLint));
+	VBO=QGLBuffer(QGLBuffer::VertexBuffer);
+	VBO.setUsagePattern( QGLBuffer::StaticDraw );
+	VBO.create();
+	VBO.bind();
+	VBO.allocate((void *)&verticesFinal[0],verticesFinal.size()*sizeof(GLint));
 
-	TBO=new QGLBuffer(QGLBuffer::VertexBuffer);
-	TBO->setUsagePattern( QGLBuffer::StaticDraw );
-	TBO->create();
-	TBO->bind();
-	TBO->allocate((void *)&texturesFinal[0],texturesFinal.size()*sizeof(GLint));
+	TBO=QGLBuffer(QGLBuffer::VertexBuffer);
+	TBO.setUsagePattern( QGLBuffer::StaticDraw );
+	TBO.create();
+	TBO.bind();
+	TBO.allocate((void *)&texturesFinal[0],texturesFinal.size()*sizeof(GLint));
 }
 
 VBOBox::~VBOBox(){
-	delete VBO;
-	delete TBO;
 };
 
 void VBOBox::draw(){
@@ -983,9 +987,9 @@ void VBOBox::draw(){
  	//glVertexPointer ( 3, GL_INT, 0, NULL );
  	//glDrawArrays(GL_QUADS, 0, pointsToDraw);
 
-	VBO->bind();
+	VBO.bind();
 	glVertexPointer ( 3, GL_INT, 0, NULL );
-	TBO->bind();
+	TBO.bind();
 	glTexCoordPointer ( 2, GL_FLOAT, 0, NULL );
 
 	//binding and drawing DIRT

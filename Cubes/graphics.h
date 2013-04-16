@@ -31,8 +31,8 @@ private:
 class VBOBox{
 private:
 	GameMain* gameMain;
-	QGLBuffer* VBO;
-	QGLBuffer* TBO;//texture buffer object like VBO
+	QGLBuffer VBO;
+	QGLBuffer TBO;//texture buffer object like VBO
 	GLuint* texturesPtr;
 
 	//координаты VBOBox

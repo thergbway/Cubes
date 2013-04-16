@@ -12,7 +12,6 @@ class World
 	//members
 private:
 	GameMain* gameMain;
-	int chunksCounter;
 	Chunk* chunks[CHUNKS_COUNT][CHUNKS_COUNT];
 	bool chunkUpdateMatrix[CHUNKS_COUNT][CHUNKS_COUNT];//совместная собственность World и Graphics
 				//-World ставит единички, Graphics их убирает

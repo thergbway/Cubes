@@ -7,7 +7,6 @@
 World::World(GameMain* gameMainPtr)
 {
 	gameMain=gameMainPtr;
-	chunksCounter=1;
 
 	//пусть главный чанк в точке (0;0)
 	const int mainChX=0;
@@ -99,7 +98,8 @@ void World::updateWorld(){
 }
 
 int World::getNewChunkId(){
-	return chunksCounter++;
+	static int chunksCounter=0;
+	return ++chunksCounter;
 }
 
 int World::random(int min,int max,int seed,int x,int z){

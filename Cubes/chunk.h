@@ -1,4 +1,7 @@
 #pragma once
+#pragma warning(disable: 4290)
+#include <new>
+#include <cstddef>//size_t
 #include "world.h"
 #include "block.h"
 #include "defines.h"
@@ -14,11 +17,15 @@ private:
 	int id;
 	int coordX;//координата точки (см. соглашение) чанка
 	int coordZ;//тоже
+	static bool alloc_map[];//для динамического выделения памяти
+	static unsigned char pool[];//для динамического выделения памяти
 public:
 	Block blocks[BLOCK_COUNT][BLOCK_HEIGHT_COUNT][BLOCK_COUNT];
 	//functions
 public:
 	Chunk(World* worldPtr, int coordX, int coordZ, int id);
+	void* operator new(size_t) throw(std::bad_alloc);
+	void operator delete(void*);
 	int getCoordX();
 	int getCoordZ();
 	int getId();
