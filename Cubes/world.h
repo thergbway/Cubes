@@ -5,6 +5,7 @@
 
 class GameMain;
 class Chunk;
+class BlockTransparencyAround;
 
 class World
 {
@@ -25,7 +26,19 @@ public:
 	int getChunkId(int chNumX,int chNumZ);
 	Chunk* getChunkPointer(int chNumX,int chNumZ);
 	bool isChunkUpdated(int chNumX,int chNumZ);
+	BlockTransparencyAround getBlockTransparencyAround(int chNumX,int chNumZ,int blX,int blY,int blZ);//получаем объект-прозрачность вокруг текущего блока
 	void setVBOForChunkCreated(int chNumX,int chNumZ);//ставит в матрице апдейтов для данного чанка 0
 	void updateWorld();//обновляем мир-создаем новые чанки,
 						//перераспределяем их, обновляем
+};
+
+class BlockTransparencyAround{//прозрачность вокруг блока
+public:
+	bool top;
+	bool down;
+	bool left;
+	bool right;
+	bool front;
+	bool back;
+	BlockTransparencyAround(bool top,bool down,bool left,bool right,bool front,bool back);
 };

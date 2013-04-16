@@ -125,6 +125,21 @@ bool World::isChunkUpdated(int chNumX,int chNumZ){
 	return chunkUpdateMatrix[chNumX][chNumZ];
 }
 
+BlockTransparencyAround World::getBlockTransparencyAround(int chNumX,int chNumZ,int blX,int blY,int blZ){
+	return BlockTransparencyAround(
+		blY<BLOCK_HEIGHT_COUNT-1?chunks[chNumX][chNumZ]->isTransparent(blX,blY+1,blZ):true,
+		blY>0?chunks[chNumX][chNumZ]->isTransparent(blX,blY-1,blZ):false,
+		blX>0?chunks[chNumX][chNumZ]->isTransparent(blX-1,blY,blZ):
+			(chNumX>0?chunks[chNumX-1][chNumZ]->isTransparent(BLOCK_COUNT-1,blY,blZ):true),
+		blX<BLOCK_COUNT-1?chunks[chNumX][chNumZ]->isTransparent(blX+1,blY,blZ):
+			(chNumX<(CHUNKS_COUNT-1)?chunks[chNumX+1][chNumZ]->isTransparent(0,blY,blZ):true),
+		blZ<BLOCK_COUNT-1?chunks[chNumX][chNumZ]->isTransparent(blX,blY,blZ+1):
+			(chNumZ<(CHUNKS_COUNT-1)?chunks[chNumX][chNumZ+1]->isTransparent(blX,blY,0):true),
+		blZ>0?chunks[chNumX][chNumZ]->isTransparent(blX,blY,blZ-1):
+			(chNumZ>0?chunks[chNumX][chNumZ-1]->isTransparent(blX,blY,BLOCK_COUNT-1):true)
+		);
+}
+
 void World::setVBOForChunkCreated(int chNumX,int chNumZ){
 	chunkUpdateMatrix[chNumX][chNumZ]=0;
 }
@@ -132,3 +147,6 @@ void World::setVBOForChunkCreated(int chNumX,int chNumZ){
 Chunk* World::getChunkPointer(int chNumX,int chNumZ){
 	return chunks[chNumX][chNumZ];
 }
+
+BlockTransparencyAround::BlockTransparencyAround(bool _top,bool _down,bool _left,bool _right,bool _front,bool _back)
+	:top(_top),down(_down),left(_left),right(_right),front(_front),back(_back){}

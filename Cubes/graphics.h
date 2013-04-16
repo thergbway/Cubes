@@ -35,6 +35,10 @@ private:
 	QGLBuffer* TBO;//texture buffer object like VBO
 	GLuint* texturesPtr;
 
+	//координаты VBOBox
+	int coorX;
+	int coorZ;
+
 	//количества точек
 	int pointsOfDirtToDraw;
 	int pointsOfGrassTopToDraw;
@@ -49,6 +53,8 @@ private:
 	int offsetOfSand;
 public:
 	void draw();
+	int getCoorX();
+	int getCoorZ();
 	VBOBox(int chNumX,int chNumZ,GameMain* gameMain,GLuint* texuresArrayPtr);
 	~VBOBox();
 };

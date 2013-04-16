@@ -130,7 +130,7 @@ Chunk::Chunk(World* worldPtr,int _coordX, int _coordZ, int _id)
 			for(int j=0;j<BLOCK_COUNT;++j){
 				int blX=coordX/CUBE_SIZE+i;
 				int blZ=coordZ/CUBE_SIZE+j;
-				matrix[i][j]=MIN_DIRT+A1+A1*sin(2*PI/T1*blX+B1)+A2+A2*sin(2*PI/T2*blZ+B2);
+				matrix[i][j]=MIN_DIRT+A1+A1*sin(2*PI/T1*blZ+B1)+A2+A2*sin(2*PI/T2*blX+B2);
 			}
 
 		for(int x=0; x<BLOCK_COUNT; ++x){
@@ -161,20 +161,6 @@ bool Chunk::updateChunk(){
 	return 0;
 }
 
-BlockTransparencyAround Chunk::getBlockTransparencyAround(int blX,int blY,int blZ){
-	return BlockTransparencyAround(
-		blY<BLOCK_HEIGHT_COUNT-1?isTransparent(blX,blY+1,blZ):true,
-		blY>0?isTransparent(blX,blY-1,blZ):false,
-		blX>0?isTransparent(blX-1,blY,blZ):true,
-		blX<BLOCK_COUNT-1?isTransparent(blX+1,blY,blZ):true,
-		blZ<BLOCK_COUNT-1?isTransparent(blX,blY,blZ+1):true,
-		blZ>0?isTransparent(blX,blY,blZ-1):true
-		);
-}
-
 bool Chunk::isTransparent(int blX,int blY,int blZ){
 	return blocks[blX][blY][blZ].isTransparent();
 }
-
-BlockTransparencyAround::BlockTransparencyAround(bool _top,bool _down,bool _left,bool _right,bool _front,bool _back)
-	:top(_top),down(_down),left(_left),right(_right),front(_front),back(_back){}

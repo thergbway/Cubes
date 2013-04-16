@@ -5,7 +5,6 @@
 
 class World;
 class Block;
-class BlockTransparencyAround;
 
 class Chunk
 {
@@ -24,18 +23,6 @@ public:
 	int getCoordZ();
 	int getId();
 	bool updateChunk();//1-changed,0-no change
-	BlockTransparencyAround getBlockTransparencyAround(int blX,int blY,int blZ);
 	bool isTransparent(int blX,int blY,int blZ);
 private:
-};
-
-class BlockTransparencyAround{
-public:
-	bool top;
-	bool down;
-	bool left;
-	bool right;
-	bool front;
-	bool back;
-	BlockTransparencyAround(bool top,bool down,bool left,bool right,bool front,bool back);
 };

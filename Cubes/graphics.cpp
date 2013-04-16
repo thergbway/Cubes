@@ -14,6 +14,7 @@
 #include "graphics.h"
 #include "gameMain.h"
 #include "chunk.h"
+#include "vector3d.h"
 
 Graphics::Graphics(GameMain* gameMainPtr,QWidget *parent/*= 0*/):QGLWidget(parent)
 {
@@ -97,13 +98,29 @@ void Graphics::paintGL(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 	Vector3D lookingPoint=gameMain->player->getVectorOfPlayerView();//вектор, куда игрок смотрит
 	gluLookAt(gameMain->player->getCoorX(),gameMain->player->getCoorY(),gameMain->player->getCoorZ(),
 		gameMain->player->getCoorX()+lookingPoint.getX(),gameMain->player->getCoorY()+lookingPoint.getY(),gameMain->player->getCoorZ()+lookingPoint.getZ(),
 		0,1,0);
 
 	for(std::map<const int,VBOBox*>::iterator iter=VBOBoxMap.begin(); iter!=VBOBoxMap.end(); ++iter){
-		iter->second->draw();
+		//приравняем у вектора lookingPoint координату y к нулю (получив новый вектор), тк иначе будут неправильные вычисления
+		Vector3D assumedLookingPoint=lookingPoint;
+		assumedLookingPoint.setY(0);
+		//если VBOBox(чанк) видит игрок, то рисуем его
+		Vector3D playerVec(gameMain->player->getCoorX(),gameMain->player->getCoorY(),gameMain->player->getCoorZ());
+		Vector3D leftBackVec=Vector3D(iter->second->getCoorX(),0,iter->second->getCoorZ())-playerVec;
+		Vector3D rightBackVec=Vector3D(iter->second->getCoorX()+CUBE_SIZE*BLOCK_COUNT,0,iter->second->getCoorZ())-playerVec;
+		Vector3D rightFrontVec=Vector3D(iter->second->getCoorX()+CUBE_SIZE*BLOCK_COUNT,0,iter->second->getCoorZ()+CUBE_SIZE*BLOCK_COUNT)-playerVec;
+		Vector3D leftFrontVec=Vector3D(iter->second->getCoorX(),0,iter->second->getCoorZ()+CUBE_SIZE*BLOCK_COUNT)-playerVec;
+		//проверяем и рисуем
+		if(assumedLookingPoint.scaleMult(leftBackVec)>0 ||
+			assumedLookingPoint.scaleMult(rightBackVec)>0 ||
+			assumedLookingPoint.scaleMult(rightFrontVec)>0 ||
+			assumedLookingPoint.scaleMult(leftFrontVec)>0){
+				iter->second->draw();
+		}
 	}
 }
 
@@ -180,6 +197,10 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	texturesPtr=_texturesArrayPtr;
 	Chunk* chunkPtr=gameMain->world->getChunkPointer(chNumX,chNumZ);
 
+	//заполним поля для координат VBOBox
+	coorX=chunkPtr->getCoordX();
+	coorZ=chunkPtr->getCoordZ();
+
 	pointsOfDirtToDraw=0;
 	pointsOfGrassTopToDraw=0;
 	pointsOfGrassSideToDraw=0;
@@ -233,7 +254,7 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 				int blCoordZ=chCoordZ+blZ*CUBE_SIZE;
 
 				//get the transparency around the block
-				BlockTransparencyAround blocksTransAround=chunkPtr->getBlockTransparencyAround(blX,blY,blZ);
+				BlockTransparencyAround blocksTransAround=gameMain->world->getBlockTransparencyAround(chNumX,chNumZ,blX,blY,blZ);
 
 				switch (chunkPtr->blocks[blX][blY][blZ].getType())
 				{
@@ -989,4 +1010,12 @@ void VBOBox::draw(){
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+int VBOBox::getCoorX(){
+	return coorX;
+}
+
+int VBOBox::getCoorZ(){
+	return coorZ;
 }

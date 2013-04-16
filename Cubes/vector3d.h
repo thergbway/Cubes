@@ -7,6 +7,7 @@ public:
 	Vector3D operator+(Vector3D);
 	Vector3D operator-(Vector3D);
 	Vector3D operator*(Vector3D);
+	double scaleMult(Vector3D);
 	double getX();
 	double getY();
 	double getZ();

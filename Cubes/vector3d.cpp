@@ -26,6 +26,10 @@ Vector3D Vector3D::operator*(Vector3D vec){
 	return result;
 }
 
+double Vector3D::scaleMult(Vector3D vect){
+	return x*vect.x+y*vect.y+z*vect.z;
+}
+
 double Vector3D::getX(){
 	return x;
 }
