@@ -20,12 +20,17 @@ const int GRASS=3;//def 3
 //graphics
 const int MIN_WIDTH=400;//def 600
 const int MIN_HEIGHT=400;//def 600
-const int CHUNKS_TO_DRAW=7;//def 13 йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
+const int CHUNKS_TO_DRAW=13;//def 13 йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
 const double PARAMETER_LEN=1.0;//def 100.0 оюпюлерп дкъ бшвхякемхъ рнвйх, йсдю ялнрпхр хцпнй
-
+//graphics-textures
 const int TEXTURES_COUNT=50;//def. 50 люйяхлюкэмне вхякн рейярсп
 const int DIRT_TEX_INDEX=0;//def. 0 хмдейя рейярспш гелкх б люяяхбе рейярсп. да лемэье TEXTURES_COUNT х ме янбоюдюрэ я дпсцхлх хмдейяюлх
 const int GRASS_TOP_TEX_INDEX=1;//def.1. ял. бшье
 const int GRASS_SIDE_TEX_INDEX=2;//def.2. ял. бшье
+//chunks generator
+//types of landscape
+const int TYPE1=1;//random landscape that is less smoothed
+const int TYPE2=2;//simple sinus landscape
+const int CHOSE_LANDSCAPE=TYPE2;//current landscape
 //math
 const double PI=3.14159265;//def 3.14159265

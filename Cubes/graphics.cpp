@@ -48,6 +48,9 @@ void Graphics::initializeGL(){
 
 	loadAllTextures();//создадим текстуры
 	glEnable(GL_TEXTURE_2D);//включим текстуры
+	//установим фильтры- нужны для правильной работы мипмапов текстурных
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 
 	//включим сглаживание
 	//для мультисэмплинга
@@ -78,7 +81,6 @@ void Graphics::paintGL(){
 				//иначе создадим новый
 				newVBOBoxMap[currId]= new VBOBox(i,j,gameMain,textures);
 				gameMain->world->setVBOForChunkCreated(i,j);
-				qDebug()<<"chunk "<<i<<j<<"created";
 			}
 		}
 	}
@@ -132,27 +134,21 @@ void Graphics::loadAllTextures(){
 	// Выделение индексов текстур
 	glGenTextures(TEXTURES_COUNT, &textures[0]);
 
+	//загрузим текстуры через создание мипмапов
 	//загружаем текстуру DIRT
 	glBindTexture(GL_TEXTURE_2D, textures[DIRT_TEX_INDEX]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, textureDirt->sizeX, textureDirt->sizeY, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, textureDirt->data);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureDirt->sizeX, textureDirt->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureDirt->data);//просто создание текстуры
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureDirt->sizeX,textureDirt->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureDirt->data);//создание мипмапа
 
 	//загружаем текстуру GRASS_TOP
 	glBindTexture(GL_TEXTURE_2D, textures[GRASS_TOP_TEX_INDEX]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassTop->sizeX, textureGrassTop->sizeY, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, textureGrassTop->data);
-
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassTop->sizeX, textureGrassTop->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureGrassTop->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureGrassTop->sizeX,textureGrassTop->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureGrassTop->data);//создание мипмапа
+	
 	//загружаем текстуру GRASS_SIDE
 	glBindTexture(GL_TEXTURE_2D, textures[GRASS_SIDE_TEX_INDEX]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassSide->sizeX, textureGrassSide->sizeY, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, textureGrassSide->data);
-
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassSide->sizeX, textureGrassSide->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureGrassSide->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureGrassSide->sizeX,textureGrassSide->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureGrassSide->data);//создание мипмапа
 }
 
 VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayPtr){
@@ -577,10 +573,6 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	TBO->create();
 	TBO->bind();
 	TBO->allocate((void *)&texturesFinal[0],texturesFinal.size()*sizeof(GLint));
-
-	qDebug()<<"VBOBox info:"<<"dirt:"<<pointsOfDirtToDraw<<"offsetDirt"<<offsetOfDirt
-		<<"grassTop"<<pointsOfGrassTopToDraw<<"offsetGrassTop"<<offsetOfGrassTop
-		<<"grassSide"<<pointsOfGrassSideToDraw<<"offsetGrassSide"<<offsetOfGrassSide;
 }
 
 VBOBox::~VBOBox(){
