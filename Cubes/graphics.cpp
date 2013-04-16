@@ -112,24 +112,37 @@ void Graphics::loadAllTextures(){
 	QString textureDirtAdress=GAME_DIRECTORY;
 	QString textureGrassTopAdress=GAME_DIRECTORY;
 	QString textureGrassSideAdress=GAME_DIRECTORY;
+	QString textureStoneAdress=GAME_DIRECTORY;
+	QString textureSandAdress=GAME_DIRECTORY;
 	textureDirtAdress.append(TEXTURE_DIRT_NAME);
 	textureGrassTopAdress.append(TEXTURE_GRASS_TOP_NAME);
 	textureGrassSideAdress.append(TEXTURE_GRASS_SIDE_NAME);
+	textureStoneAdress.append(TEXTURE_STONE_NAME);
+	textureSandAdress.append(TEXTURE_SAND_NAME);
 	//создадим массивы дл€ преобразовани€
 	wchar_t textureDirtAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	wchar_t textureGrassTopAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	wchar_t textureGrassSideAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureStoneAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureSandAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	textureDirtAdress.toWCharArray(textureDirtAdressFinalArray);
 	textureGrassTopAdress.toWCharArray(textureGrassTopAdressFinalArray);
 	textureGrassSideAdress.toWCharArray(textureGrassSideAdressFinalArray);
+	textureStoneAdress.toWCharArray(textureStoneAdressFinalArray);
+	textureSandAdress.toWCharArray(textureSandAdressFinalArray);
+
 
 	// «агрузка текстур
 	AUX_RGBImageRec *textureDirt;
 	AUX_RGBImageRec *textureGrassTop;
 	AUX_RGBImageRec *textureGrassSide;
+	AUX_RGBImageRec *textureStone;
+	AUX_RGBImageRec *textureSand;
 	textureDirt = auxDIBImageLoad(textureDirtAdressFinalArray);
 	textureGrassTop = auxDIBImageLoad(textureGrassTopAdressFinalArray);
 	textureGrassSide = auxDIBImageLoad(textureGrassSideAdressFinalArray);
+	textureStone = auxDIBImageLoad(textureStoneAdressFinalArray);
+	textureSand = auxDIBImageLoad(textureSandAdressFinalArray);
 
 	// ¬ыделение индексов текстур
 	glGenTextures(TEXTURES_COUNT, &textures[0]);
@@ -149,6 +162,16 @@ void Graphics::loadAllTextures(){
 	glBindTexture(GL_TEXTURE_2D, textures[GRASS_SIDE_TEX_INDEX]);
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureGrassSide->sizeX, textureGrassSide->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureGrassSide->data);
 	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureGrassSide->sizeX,textureGrassSide->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureGrassSide->data);//создание мипмапа
+
+	//загружаем текстуру STONE
+	glBindTexture(GL_TEXTURE_2D, textures[STONE_TEX_INDEX]);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureStone->sizeX, textureStone->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, texturStone->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureStone->sizeX,textureStone->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureStone->data);//создание мипмапа
+
+	//загружаем текстуру SAND
+	glBindTexture(GL_TEXTURE_2D, textures[SAND_TEX_INDEX]);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureSand->sizeX, textureSand->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureSand->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureSand->sizeX,textureSand->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureSand->data);//создание мипмапа
 }
 
 VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayPtr){
@@ -160,10 +183,14 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	pointsOfDirtToDraw=0;
 	pointsOfGrassTopToDraw=0;
 	pointsOfGrassSideToDraw=0;
+	pointsOfStoneToDraw=0;
+	pointsOfSandToDraw=0;
 
 	offsetOfDirt=0;
 	offsetOfGrassTop=0;
 	offsetOfGrassSide=0;
+	offsetOfStone=0;
+	offsetOfSand=0;
 
 	std::vector<GLint> verticesDirt;
 	std::vector<GLfloat> texturesDirt;
@@ -179,6 +206,16 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	std::vector<GLfloat> texturesGrassSide;
 	verticesGrassSide.reserve(1500000);
 	texturesGrassSide.reserve(1500000);
+
+	std::vector<GLint> verticesStone;
+	std::vector<GLfloat> texturesStone;
+	verticesStone.reserve(1500000);
+	texturesStone.reserve(1500000);
+
+	std::vector<GLint> verticesSand;
+	std::vector<GLfloat> texturesSand;
+	verticesSand.reserve(1500000);
+	texturesSand.reserve(1500000);
 
 	//get chunk`s coordinates
 	int chCoordX=chunkPtr->getCoordX();
@@ -362,7 +399,6 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 						texturesDirt.push_back(0.0);
 						texturesDirt.push_back(0.0);
 					}
-
 					break;
 				case GRASS:
 					//top
@@ -527,6 +563,332 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 						texturesGrassSide.push_back(0.0);
 					}
 					break;
+				case STONE:
+					//top
+					if(blocksTransAround.top==true){
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(0.0);
+
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(1.0);
+
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(1.0);
+
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(0.0);
+					}
+
+					//down
+					if(blocksTransAround.down==true){
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(0.0);
+								
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(0.0);
+					}
+
+					//front
+					if(blocksTransAround.front==true){
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(0.0);
+								
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(0.0);
+					}
+
+					//back
+					if(blocksTransAround.back==true){
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(0.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(1.0);
+							
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(1.0);
+							
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(0.0);
+					}
+
+					//left
+					if(blocksTransAround.left==true){
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(0.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(0.0);
+					}
+
+					//right
+					if(blocksTransAround.right==true){
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(0.0);
+								
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ);
+						texturesStone.push_back(1.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY+CUBE_SIZE);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(1.0);
+								
+						verticesStone.push_back(blCoordX+CUBE_SIZE);
+						verticesStone.push_back(blCoordY);
+						verticesStone.push_back(blCoordZ+CUBE_SIZE);
+						texturesStone.push_back(0.0);
+						texturesStone.push_back(0.0);
+					}
+					break;
+				case SAND:
+					//top
+					if(blocksTransAround.top==true){
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(0.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(0.0);
+					}
+
+					//down
+					if(blocksTransAround.down==true){
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(0.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(0.0);
+					}
+
+					//front
+					if(blocksTransAround.front==true){
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(0.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(0.0);
+					}
+
+					//back
+					if(blocksTransAround.back==true){
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(0.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(0.0);
+					}
+
+					//left
+					if(blocksTransAround.left==true){
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(0.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(0.0);
+					}
+
+					//right
+					if(blocksTransAround.right==true){
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(0.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ);
+						texturesSand.push_back(1.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY+CUBE_SIZE);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(1.0);
+
+						verticesSand.push_back(blCoordX+CUBE_SIZE);
+						verticesSand.push_back(blCoordY);
+						verticesSand.push_back(blCoordZ+CUBE_SIZE);
+						texturesSand.push_back(0.0);
+						texturesSand.push_back(0.0);
+					}
+					break;
 				}
 			}
 		}
@@ -544,6 +906,10 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 		verticesFinal.push_back(*iter);
 	for(std::vector<GLint>::iterator iter=verticesGrassSide.begin();iter != verticesGrassSide.end();++iter)
 		verticesFinal.push_back(*iter);
+	for(std::vector<GLint>::iterator iter=verticesStone.begin();iter != verticesStone.end();++iter)
+		verticesFinal.push_back(*iter);
+	for(std::vector<GLint>::iterator iter=verticesSand.begin();iter != verticesSand.end();++iter)
+		verticesFinal.push_back(*iter);
 	//заполним texturesFinal
 	for(std::vector<GLfloat>::iterator iter=texturesDirt.begin();iter != texturesDirt.end();++iter)
 		texturesFinal.push_back(*iter);
@@ -551,16 +917,24 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 		texturesFinal.push_back(*iter);
 	for(std::vector<GLfloat>::iterator iter=texturesGrassSide.begin();iter != texturesGrassSide.end();++iter)
 		texturesFinal.push_back(*iter);
+	for(std::vector<GLfloat>::iterator iter=texturesStone.begin();iter != texturesStone.end();++iter)
+		texturesFinal.push_back(*iter);
+	for(std::vector<GLfloat>::iterator iter=texturesSand.begin();iter != texturesSand.end();++iter)
+		texturesFinal.push_back(*iter);
 
 	//сколько каких видов точек надо рисовать
 	pointsOfDirtToDraw=verticesDirt.size()/3;
 	pointsOfGrassTopToDraw=verticesGrassTop.size()/3;
 	pointsOfGrassSideToDraw=verticesGrassSide.size()/3;
+	pointsOfStoneToDraw=verticesStone.size()/3;
+	pointsOfSandToDraw=verticesSand.size()/3;
 
 	//зададим смещение
 	offsetOfDirt=0;
 	offsetOfGrassTop=offsetOfDirt+pointsOfDirtToDraw;
 	offsetOfGrassSide=offsetOfGrassTop+pointsOfGrassTopToDraw;
+	offsetOfStone=offsetOfGrassSide+pointsOfGrassSideToDraw;
+	offsetOfSand=offsetOfStone+pointsOfStoneToDraw;
 
 	VBO=new QGLBuffer(QGLBuffer::VertexBuffer);
 	VBO->setUsagePattern( QGLBuffer::StaticDraw );
@@ -604,6 +978,14 @@ void VBOBox::draw(){
 	//binding and drawing GRASS_SIDE
 	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+GRASS_SIDE_TEX_INDEX));
 	glDrawArrays(GL_QUADS, offsetOfGrassSide, pointsOfGrassSideToDraw);
+
+	//binding and drawing STONE
+	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+STONE_TEX_INDEX));
+	glDrawArrays(GL_QUADS, offsetOfStone, pointsOfStoneToDraw);
+
+	//binding and drawing SAND
+	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+SAND_TEX_INDEX));
+	glDrawArrays(GL_QUADS, offsetOfSand, pointsOfSandToDraw);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

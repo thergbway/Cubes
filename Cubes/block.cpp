@@ -17,6 +17,16 @@ void Block::setGrass(){
 	transparent=false;
 }
 
+void Block::setStone(){
+	type=STONE;
+	transparent=false;
+}
+
+void Block::setSand(){
+	type=SAND;
+	transparent=false;
+}
+
 char Block::getType(){
 	return type;
 }

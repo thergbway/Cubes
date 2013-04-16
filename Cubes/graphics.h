@@ -39,10 +39,14 @@ private:
 	int pointsOfDirtToDraw;
 	int pointsOfGrassTopToDraw;
 	int pointsOfGrassSideToDraw;
+	int pointsOfStoneToDraw;
+	int pointsOfSandToDraw;
 	//offsets
 	int offsetOfDirt;
 	int offsetOfGrassTop;
 	int offsetOfGrassSide;
+	int offsetOfStone;
+	int offsetOfSand;
 public:
 	void draw();
 	VBOBox(int chNumX,int chNumZ,GameMain* gameMain,GLuint* texuresArrayPtr);

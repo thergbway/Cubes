@@ -17,6 +17,8 @@ public:
 	void setAir();
 	void setDirt();
 	void setGrass();
+	void setStone();
+	void setSand();
 	char getType();
 	bool isTransparent();
 };
