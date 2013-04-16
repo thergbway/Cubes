@@ -166,8 +166,12 @@ Chunk::Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder,int _coordX, int
 		//filling with stone
 		for(int x=0; x<BLOCK_COUNT; ++x)
 			for(int z=0; z<BLOCK_COUNT; ++z)
-				for(int y=0; y<layerTransfer.stoneLayer[x][z]; ++y)
-					blocks[x][y][z].setSand();
+				for(int y=0; y<layerTransfer.stoneLayer[x][z]; ++y){
+					if(y+1 != layerTransfer.stoneLayer[x][z])
+						blocks[x][y][z].setDirt();
+					else
+						blocks[x][y][z].setGrass();
+				}
 	}
 	//тут ничего не должно быть- инициализируем все в if
 }

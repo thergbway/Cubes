@@ -147,9 +147,4 @@
       <Filter>.h</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="_INFO.txt">
-      <Filter>.h</Filter>
-    </None>
-  </ItemGroup>
 </Project>

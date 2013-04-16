@@ -1,6 +1,9 @@
 #pragma once
+#pragma warning(disable: 4290)
 #include <QGLWidget>
 #include <QGLBuffer>
+#include <new>
+#include <cstddef>//size_t
 #include <map>
 #include "vector3d.h"
 #include "gameMain.h"
@@ -39,6 +42,9 @@ private:
 	int coorX;
 	int coorZ;
 
+	static bool alloc_map[];//дл€ динамического выделени€ пам€ти
+	static unsigned char pool[];//дл€ динамического выделени€ пам€ти
+
 	//количества точек
 	int pointsOfDirtToDraw;
 	int pointsOfGrassTopToDraw;
@@ -55,6 +61,8 @@ public:
 	void draw();
 	int getCoorX();
 	int getCoorZ();
+	void* operator new(size_t) throw(std::bad_alloc);
+	void operator delete(void*);
 	VBOBox(int chNumX,int chNumZ,GameMain* gameMain,GLuint* texuresArrayPtr);
 	~VBOBox();
 };

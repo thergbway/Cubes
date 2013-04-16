@@ -7,7 +7,7 @@
 WorldLayerHolder::WorldLayerHolder(GameMain* gameMainPtr)
 	:gameMain(gameMainPtr){
 	//инициализируем в некоторой точке
-	reloadLayers(0,0);
+	reloadLayers(15*CUBE_SIZE,-27*CUBE_SIZE);
 }
 
 void WorldLayerHolder::updateLayerTransferForChunk(int coorChX,int coorChZ,LayerTransfer& outputLayerTransfer){
@@ -50,8 +50,12 @@ void WorldLayerHolder::updateLayerTransferForChunk(int coorChX,int coorChZ,Layer
 			if(i1>=0 && i1<BLOCK_CHAINED_COUNT
 				&& j1>=0 && j1<BLOCK_CHAINED_COUNT)
 				outputLayerTransfer.stoneLayer[i0][j0]=stoneLayer[i1][j1];
-			else
-				outputLayerTransfer.stoneLayer[i0][j0]=8;
+			else{
+				if(i0%2==0 && j0%2==0)
+					outputLayerTransfer.stoneLayer[i0][j0]=5;
+				else
+					outputLayerTransfer.stoneLayer[i0][j0]=5;
+			}
 		}
 	}
 }
@@ -81,6 +85,7 @@ int WorldLayerHolder::random(int min,int max,int seed,int x,int z){
 }
 
 void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
+	qDebug()<<"Starting reloading layers";
 	//эта функци€ вызываетс€ из WorldLayerHolder::updateLayerTransferForChunk с новыми координатами, если старые неверны
 	coordX=coordMainX;
 	coordZ=coordMainZ;
@@ -90,19 +95,55 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 	//заполним слой недействительными блоками дл€ отличи€
 	for(int i=0; i<BLOCK_CHAINED_COUNT; ++i)
 		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j)
-			stoneTmpLayer[i][j]=0;
+			stoneTmpLayer[i][j]=-500;
 	//угловые значени€
 	//stoneTmpLayer[0][0]=random(STONE_MAX,STONE_MAX,seed,coordX,coordZ);
 	//stoneTmpLayer[0][BLOCK_CHAINED_COUNT-1]=random(STONE_MAX,STONE_MAX,seed,coordX,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
 	//stoneTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=random(STONE_MAX,STONE_MAX,seed,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
 	//stoneTmpLayer[BLOCK_CHAINED_COUNT-1][0]=random(STONE_MAX,STONE_MAX,seed,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ);
 	stoneTmpLayer[0][0]=10;
-	stoneTmpLayer[0][BLOCK_CHAINED_COUNT-1]=20;
-	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=30;
+	stoneTmpLayer[0][BLOCK_CHAINED_COUNT-1]=50;
+	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=10;
 	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][0]=40;
 
-	//начинаем рекурсивное заполнение предварительного сло€
-	stoneMakeSquare(0,0,BLOCK_CHAINED_COUNT-1,BLOCK_CHAINED_COUNT-1,stoneTmpLayer);
+	//теперь заполним предварительный слой
+	int base=BLOCK_CHAINED_COUNT-1;//= square or diamond size -1 for the current iteration
+	while(base >= 2){
+		//MAKE SQUARE
+		//сколько квадратов поместитс€ по стороне
+		int sqrForSide=(BLOCK_CHAINED_COUNT-1)/base;
+		for(int i=0; i < sqrForSide; ++i){
+			for(int j=0; j < sqrForSide; ++j){
+				//squareStep
+				int indexLeftBackX=i*base;
+				int indexLeftBackZ=j*base;
+				int indexRightFrontX=i*base+base;
+				int indexRightFrontZ=j*base+base;
+				stoneMakeSquare(indexLeftBackX,indexLeftBackZ,indexRightFrontX,indexRightFrontZ,stoneTmpLayer);
+			}
+		}
+		//MAKE DIAMOND
+		//снова проходим как шаг  ¬јƒ–ј“ только функци€ теперь DIAMOND
+		//сколько квадратов поместитс€ по стороне (уже инициализирована переменна€)
+		sqrForSide=(BLOCK_CHAINED_COUNT-1)/base;
+		for(int i=0; i < sqrForSide; ++i){
+			for(int j=0; j < sqrForSide; ++j){
+				//squareStep
+				int indexLeftBackX=i*base;
+				int indexLeftBackZ=j*base;
+				int indexRightFrontX=i*base+base;
+				int indexRightFrontZ=j*base+base;
+				int indexCentralX=(indexRightFrontX-indexLeftBackX)/2+indexLeftBackX;
+				int indexCentralZ=(indexRightFrontZ-indexLeftBackZ)/2+indexLeftBackZ;
+				stoneMakeDiamond(indexLeftBackX,indexLeftBackZ,indexCentralX,indexCentralZ,stoneTmpLayer);
+				stoneMakeDiamond(indexCentralX,indexCentralZ-base,indexRightFrontX,indexLeftBackZ,stoneTmpLayer);
+				stoneMakeDiamond(indexRightFrontX,indexLeftBackZ,indexCentralX+base,indexCentralZ,stoneTmpLayer);
+				stoneMakeDiamond(indexCentralX,indexCentralZ,indexRightFrontX,indexRightFrontZ,stoneTmpLayer);
+			}
+		}
+		//уменьшаем базу
+		base/=2;
+	}
 	//переведем временный слой в основной слой
 	for(int i=0; i<BLOCK_CHAINED_COUNT; ++i){
 		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j){
@@ -113,12 +154,17 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 				stoneLayer[i][j]=(byte)stoneTmpLayer[i][j];
 		}
 	}
-
+	qDebug()<<"Finished reloading layers";
 	qDebug()<<(byte)stoneLayer[0][0]<<(byte)stoneLayer[0][BLOCK_CHAINED_COUNT-1]<<(byte)stoneLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]<<(byte)stoneLayer[BLOCK_CHAINED_COUNT-1][0];
 }
 
 void WorldLayerHolder::stoneMakeSquare(int indexLeftBackX,int indexLeftBackZ,int indexRightFrontX, int indexRightFrontZ, float stoneTmpLayer[BLOCK_CHAINED_COUNT][BLOCK_CHAINED_COUNT]){
-	float randDispl=0;
+	int sqrSize=indexRightFrontX-indexLeftBackX;
+	float factor=sqrSize/STONE_SPARPNESS;
+	int sign=1;
+	if(random(30,50,56516,indexLeftBackX*indexLeftBackX/indexRightFrontX*indexLeftBackZ,indexLeftBackZ*indexRightFrontX)>40)
+		sign=-1;
+	float randDispl=sign*random(5,10,56516,indexLeftBackX*indexLeftBackX/indexRightFrontX*indexLeftBackZ,indexLeftBackZ*indexRightFrontX)*factor;
 	int currIndexX=(indexRightFrontX-indexLeftBackX)/2+indexLeftBackX;
 	int currIndexZ=(indexRightFrontZ-indexLeftBackZ)/2+indexLeftBackZ;
 	float average=stoneTmpLayer[indexLeftBackX][indexLeftBackZ]+
@@ -132,23 +178,15 @@ void WorldLayerHolder::stoneMakeSquare(int indexLeftBackX,int indexLeftBackZ,int
 		stoneTmpLayer[currIndexX][currIndexZ]=STONE_MIN;
 	if(stoneTmpLayer[currIndexX][currIndexZ]>STONE_MAX)
 		stoneTmpLayer[currIndexX][currIndexZ]=STONE_MAX;
-	//makeDiamondStep
-	stoneMakeDiamond(indexLeftBackX,indexLeftBackZ,currIndexX,currIndexZ,stoneTmpLayer);
-	stoneMakeDiamond(currIndexX,currIndexZ-(indexRightFrontZ-indexLeftBackZ),indexRightFrontX,indexLeftBackZ,stoneTmpLayer);
-	stoneMakeDiamond(indexRightFrontX,indexLeftBackZ,indexRightFrontX+(indexRightFrontX-indexLeftBackX)/2,currIndexZ,stoneTmpLayer);
-	stoneMakeDiamond(currIndexX,currIndexZ,indexRightFrontX,indexRightFrontZ,stoneTmpLayer);
-	//если это шаг на самом малом квадрате- выйдем из рекурсии
-	if(indexRightFrontX-indexLeftBackX == 2)
-		return;
-	//иначе рекурси€ малых квадратов
-	stoneMakeSquare(indexLeftBackX,indexLeftBackZ,currIndexX,currIndexZ,stoneTmpLayer);
-	stoneMakeSquare(currIndexX,indexLeftBackZ,indexRightFrontX,currIndexZ,stoneTmpLayer);
-	stoneMakeSquare(currIndexX,currIndexZ,indexRightFrontX,indexRightFrontZ,stoneTmpLayer);
-	stoneMakeSquare(indexLeftBackX,currIndexZ,currIndexX,indexRightFrontZ,stoneTmpLayer);
 }
 
 void WorldLayerHolder::stoneMakeDiamond(int indexBackX,int indexBackZ,int indexRightX, int indexRightZ, float stoneTmpLayer[BLOCK_CHAINED_COUNT][BLOCK_CHAINED_COUNT]){
-	float randDispl=0;
+	int sqrSize=indexRightX-indexBackX;
+	float factor=sqrSize/STONE_SPARPNESS;
+	int sign=1;
+	if(random(30,50,56516,indexBackX*indexBackX/indexRightX*indexBackZ,indexBackZ*indexRightX)>40)
+		sign=-1;
+	float randDispl=sign*random(5,15,56516,indexBackX*indexBackX/indexRightX*indexBackZ,indexBackZ*indexRightX)*factor;
 	int currIndexX=indexBackX;
 	int currIndexZ=indexRightZ;
 	int diamondSize=(indexRightX-indexBackX)*2;

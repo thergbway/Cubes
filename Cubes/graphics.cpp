@@ -66,7 +66,6 @@ void Graphics::resizeGL(int nWidth, int nHeight){
 };
 
 void Graphics::paintGL(){
-	qDebug()<<"graphics:paintGL";
 	//обновим VBOBoxMap в новую newVBOBoxMap, если нужно, создадим новые VBOBox, удалим старые VBOBox
 	//копируем существующие нужные VBOBox в новый map
 	std::map<const int,VBOBox*> newVBOBoxMap;
@@ -104,7 +103,6 @@ void Graphics::paintGL(){
 			}
 		}
 	}
-	qDebug()<<"stopped creating VBOBox";
 	//заполняем старую карту новой
 	VBOBoxMap=newVBOBoxMap;
 
@@ -204,6 +202,9 @@ void Graphics::loadAllTextures(){
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureSand->sizeX, textureSand->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureSand->data);
 	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureSand->sizeX,textureSand->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureSand->data);//создание мипмапа
 }
+
+bool VBOBox::alloc_map[CHUNKS_TO_DRAW*CHUNKS_TO_DRAW];//для динамического выделения памяти
+unsigned char VBOBox::pool[CHUNKS_TO_DRAW*CHUNKS_TO_DRAW*sizeof(VBOBox)];//для динамического выделения памяти
 
 VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayPtr){
 	gameMain=_gameMain;
@@ -1030,4 +1031,28 @@ int VBOBox::getCoorX(){
 
 int VBOBox::getCoorZ(){
 	return coorZ;
+}
+
+void* VBOBox::operator new(size_t) throw(std::bad_alloc){
+	for(int i=0; i<CHUNKS_TO_DRAW*CHUNKS_TO_DRAW; ++i){
+		if(!alloc_map[i]){
+			alloc_map[i]=true;//mark as in use
+			return pool+i*sizeof(VBOBox);
+		}
+	}
+	//if space has not been found
+	qDebug()<<"No more free memory to allocate from pool. See implementation of class VBOBox. Throwing std::bad_alloc.";
+	throw std::bad_alloc();
+}
+
+void VBOBox::operator delete(void* ptr){
+	if(!ptr){
+		qDebug()<<"function VBOBox::operator delete was called with NULL parameter. Check for error.";
+		return;
+	}
+	//вычислим номер блока из пула
+	unsigned long long block=(unsigned long long) ptr- (unsigned long long)pool;
+	block /= sizeof(VBOBox);
+	//mark it free
+	alloc_map[block]=false;
 }
