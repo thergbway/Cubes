@@ -4,11 +4,17 @@
 #include "gameMain.h"
 #include "defines.h"
 #include "worldlayerholder.h"
+#include "gameDataPreloader.h"
 
 World::World(GameMain* gameMainPtr)
-	:gameMain(gameMainPtr)
-{
-	worldLayerHolder=new WorldLayerHolder(gameMainPtr);
+	:gameMain(gameMainPtr){
+
+	//запускаем предзагрузчик
+	gameDataPreloader=new GameDataPreloader(this);
+	gameDataPreloaderPtr=gameDataPreloader;
+	qDebug()<<"init adresses from world"<<gameDataPreloader<<gameDataPreloaderPtr;
+	mainUpdThreadStarterNeedToWait=false;//launch
+
 	//пусть главный чанк в точке (0;0)
 	const int mainChX=0;
 	const int mainChZ=0;
@@ -16,7 +22,7 @@ World::World(GameMain* gameMainPtr)
 	//создаем мир с нужными координатами
 	for(int x=0; x<CHUNKS_COUNT; ++x){
 		for(int z=0; z<CHUNKS_COUNT; ++z){
-			chunks[x][z]=new Chunk(this,worldLayerHolder,mainChX + x*BLOCK_COUNT*CUBE_SIZE,mainChZ + z*BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+			chunks[x][z]=gameDataPreloader->getNewChunkPtr(mainChX + x*BLOCK_COUNT*CUBE_SIZE,mainChZ + z*BLOCK_COUNT*CUBE_SIZE);
 		}
 	}
 
@@ -81,7 +87,7 @@ void World::updateWorld(){
 				for(int j=0; j<CHUNKS_COUNT; ++j){
 					chunks[i][j]=newChunks[i][j];
 					if(chunks[i][j]==nullptr){
-						chunks[i][j]=new Chunk(this,worldLayerHolder,mainChX+i*BLOCK_COUNT*CUBE_SIZE,mainChZ+j*BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+						chunks[i][j]=gameDataPreloader->getNewChunkPtr(mainChX+i*BLOCK_COUNT*CUBE_SIZE,mainChZ+j*BLOCK_COUNT*CUBE_SIZE);
 						chunkUpdateMatrix[i][j]=true;
 					}
 				}
@@ -96,11 +102,9 @@ void World::updateWorld(){
 				chunkUpdateMatrix[i][j]=true;
 		}
 	}
-}
 
-int World::getNewChunkId(){
-	static int chunksCounter=0;
-	return ++chunksCounter;
+	//после всего(обязательно!) обновим текущие координаты игрока для предзагрузчика
+	gameDataPreloader->setPlEstCoordinates(gameMain->player->getCoorX(),gameMain->player->getCoorZ());
 }
 
 int World::getChunkCoordX(int chNumX,int chNumZ){

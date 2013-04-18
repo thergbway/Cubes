@@ -5,10 +5,13 @@
 #include <QDebug>
 #include "chunk.h"
 #include "world.h"
+#include "worldlayerholder.h"
+#include "gameDataPreloader.h"
 #include "defines.h"
 
-bool Chunk::alloc_map[CHUNKS_COUNT*CHUNKS_COUNT];//дл€ динамического выделени€ пам€ти
-unsigned char Chunk::pool[CHUNKS_COUNT*CHUNKS_COUNT*sizeof(Chunk)];//дл€ динамического выделени€ пам€ти
+const int CHUNKS_HEAP_SIZE=CHUNKS_COUNT*CHUNKS_COUNT+CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH*CHUNKS_PRELOAD_BORDER;
+bool Chunk::alloc_map[CHUNKS_HEAP_SIZE];//дл€ динамического выделени€ пам€ти
+unsigned char Chunk::pool[CHUNKS_HEAP_SIZE*sizeof(Chunk)];//дл€ динамического выделени€ пам€ти
 
 Chunk::Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder,int _coordX, int _coordZ, int _id)
 {
@@ -176,11 +179,15 @@ Chunk::Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder,int _coordX, int
 	//тут ничего не должно быть- инициализируем все в if
 }
 
+Chunk::~Chunk(){
+}
+
 void* Chunk::operator new(size_t) throw(std::bad_alloc){
-	for(int i=0; i<CHUNKS_COUNT*CHUNKS_COUNT; ++i){
+	for(int i=0; i<CHUNKS_HEAP_SIZE; ++i){
 		if(!alloc_map[i]){
 			alloc_map[i]=true;//mark as in use
-			return pool+i*sizeof(Chunk);
+			void* toReturn=pool+i*sizeof(Chunk);
+			return toReturn;
 		}
 	}
 	//if space has not been found

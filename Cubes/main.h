@@ -2,7 +2,9 @@
 #include <QMainWindow>
 #include <QSplashScreen>
 #include <crtdbg.h>
+#include <process.h>
 #include "gameMain.h"
+#include "gameDataPreloader.h"
 #include "defines.h"
 
 #pragma comment(linker, "/stack:200000000")//необходимо увеличить стек
@@ -10,6 +12,10 @@
 int main(int argc,char* argv[])
 {
 	QApplication app(argc,argv);
+
+	mainUpdThreadStarterNeedToWait=true;//запрещаем потоку стартовать
+	gameDataPreloaderPtr=nullptr;
+	_beginthreadex(NULL, 0, mainUpdThreadStarter,NULL,0,NULL);//запускаем поток- он будет ждать старта
 
 	QSplashScreen* splashScreen=new QSplashScreen;
 	QString splashScreenAdress;
@@ -28,6 +34,8 @@ int main(int argc,char* argv[])
 	mainWindow->show();
 	splashScreen->finish(mainWindow);
 	delete splashScreen;
+
+	qDebug()<<"NOTE: random has only 2 iterations";
 
 	//starting makeGameCycle
 	gameMain->startGameOnce();

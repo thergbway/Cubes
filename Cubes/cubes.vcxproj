@@ -15,6 +15,7 @@
     <ClCompile Include="blocktransparencyaround.cpp" />
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="gameDataPreloader.cpp" />
     <ClCompile Include="gameMain.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_gameMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -41,6 +42,7 @@
     <ClCompile Include="info.cpp" />
     <ClCompile Include="main.h" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="VBOBox.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="world.cpp" />
     <ClCompile Include="worldlayerholder.cpp" />
@@ -51,6 +53,8 @@
     <ClInclude Include="chunk.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="defines.h" />
+    <ClInclude Include="gameDataPreloader.h" />
+    <ClInclude Include="VBOBox.h" />
     <ClInclude Include="worldlayerholder.h" />
     <CustomBuild Include="gameMain.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -156,7 +160,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;$(QTDIR)\lib\QtGuid4.lib;$(QTDIR)\lib\QtCored4.lib;QtOpenGLd4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -192,7 +196,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;NDEBUG;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>

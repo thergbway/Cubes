@@ -31,4 +31,6 @@ void GameMain::makeGameStep(){
 	kMController->moveCursorToDefaultPlace();
 	world->updateWorld();
 	graphics->updateGL();
+	static int frameCountTest=0;
+	qDebug()<<"frame No"<<++frameCountTest;
 }

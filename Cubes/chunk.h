@@ -27,6 +27,7 @@ public:
 	//functions
 public:
 	Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder, int coordX, int coordZ, int id);
+	~Chunk();
 	void* operator new(size_t) throw(std::bad_alloc);
 	void operator delete(void*);
 	int getCoordX();

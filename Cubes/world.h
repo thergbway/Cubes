@@ -3,24 +3,23 @@
 #include "chunk.h"
 #include "defines.h"
 #include "blocktransparencyaround.h"
-#include "worldlayerholder.h"
+#include "gameDataPreloader.h"
 
 class GameMain;
 class Chunk;
 class BlockTransparencyAround;
-class WorldLayerHolder;
+class GameDataPreloader;
 
 class World
 {
 	//members
 private:
 	GameMain* gameMain;
-	WorldLayerHolder* worldLayerHolder;
+	GameDataPreloader* gameDataPreloader;
 	Chunk* chunks[CHUNKS_COUNT][CHUNKS_COUNT];
 	bool chunkUpdateMatrix[CHUNKS_COUNT][CHUNKS_COUNT];//совместная собственность World и Graphics
 				//-World ставит единички, Graphics их убирает
 	//functions
-	int getNewChunkId();
 public:
 	World(GameMain* gameMainPtr);
 	int getChunkCoordX(int chNumX,int chNumZ);

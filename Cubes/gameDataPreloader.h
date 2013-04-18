@@ -1,0 +1,53 @@
+#pragma once
+#include "chunk.h"
+#include "world.h"
+#include "worldlayerholder.h"
+
+class Chunk;
+class GameDataPreloader;
+class World;
+
+//работа с запуском предзагрузчика
+unsigned int __stdcall mainUpdThreadStarter(void* pParams);
+extern bool mainUpdThreadStarterNeedToWait;//флаг ожидания старта потока предзагрузчика
+extern GameDataPreloader* gameDataPreloaderPtr;//поток предзагрузчика будет использовать этот объект
+//~конец работы с прездагрузчиком
+
+//константы
+const int CHUNKS_PRELOAD_BORDER=CHUNKS_PRELOAD_COUNT;
+const int CHUNKS_PRELOAD_LONG_SIDE=CHUNKS_PRELOAD_BORDER*2+CHUNKS_COUNT;
+const int CHUNKS_PRELOAD_SHORT_SIDE=CHUNKS_COUNT;
+const int CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH=CHUNKS_PRELOAD_LONG_SIDE*2+CHUNKS_PRELOAD_SHORT_SIDE*2;
+
+class GameDataPreloader{
+	//Класс предоставляет пользователям данные по чанкам, VBOBox, WorldLayerHolder.
+	//Класс не имеет права взаимодействовать с внешним миром.
+	//Все данные ему мы предоставляем. Класс же генерирует нужные нам данные
+	//В классе работает отдельный генерирующий поток, который и генерирует сами данные
+	//При изъятии данных поток останавливаем. По окончании операции снова запускаем
+
+	//members
+public:
+private:
+	CRITICAL_SECTION plCoordCriSec; // Критическая секция
+	World* world;
+	WorldLayerHolder* worldLayerHolder;
+	double plEstCoordX;//примерные координаты игрока
+	double plEstCoordZ;//примерные координаты игрока
+	bool mainUpdCyclePaused;//флаг, контролируемый потоком
+	bool mainUpdCycleRedFlag;//флаг для потока. Необходимо остановиться
+	Chunk* chunksPreload[CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH][CHUNKS_PRELOAD_BORDER];
+	//functions
+public:
+	GameDataPreloader(World* world);
+	~GameDataPreloader();
+	Chunk* getNewChunkPtr(int coordX, int coordZ);//возвращ. готовый к использованию чанк
+	void setPlEstCoordinates(double plEstCoordX, double plEstCoordZ);
+	void mainUpdCycle();
+private:
+	void pauseMainUpdCycle();
+	void unpauseMainUpdCycle();
+	int getNewChunkId();
+	double getPlEstCoordX();
+	double getPlEstCoordZ();
+};

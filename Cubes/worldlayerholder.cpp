@@ -4,8 +4,7 @@
 #include "worldlayerholder.h"
 #include "defines.h"
 
-WorldLayerHolder::WorldLayerHolder(GameMain* gameMainPtr)
-	:gameMain(gameMainPtr){
+WorldLayerHolder::WorldLayerHolder(){
 	//инициализируем в некоторой точке
 	reloadLayers(15*CUBE_SIZE,-27*CUBE_SIZE);
 }
@@ -25,36 +24,24 @@ void WorldLayerHolder::updateLayerTransferForChunk(int coorChX,int coorChZ,Layer
 	//теперь проверим, не нужно ли подгружать
 	bool flag1=(indexX1>=0 && indexZ1>=0);
 	bool flag2=(indexX2<BLOCK_CHAINED_COUNT && indexZ2<BLOCK_CHAINED_COUNT);
-	//if(flag1 || flag2){//выдадим, что знаем, остальное по одному уровню
-	//	for(int i0=0,i1=indexX1; i1<indexX2; ++i1, ++i0){
-	//		for(int j0=0, j1=indexZ1; j1<indexZ2; ++j1, ++j0){
-	//			if(i1>=0 && i1<BLOCK_CHAINED_COUNT
-	//				&& j1>=0 && j1<BLOCK_CHAINED_COUNT)
-	//				outputLayerTransfer.stoneLayer[i0][j0]=stoneLayer[i1][j1];
-	//			else
-	//				outputLayerTransfer.stoneLayer[i0][j0]=8;
-	//		}
-	//	}
-	//}
-	//else{//иначе выдадим один уровень (просто для теста)
-	//	for(int i=0; i<BLOCK_COUNT; ++i){
-	//		for(int j=0; j<BLOCK_COUNT; ++j){
-	//			outputLayerTransfer.stoneLayer[i][j]=5;
-	//		}
-	//	}
-	//}
-
-	//для теста
-	for(int i0=0,i1=indexX1; i1<indexX2; ++i1, ++i0){
-		for(int j0=0, j1=indexZ1; j1<indexZ2; ++j1, ++j0){
-			if(i1>=0 && i1<BLOCK_CHAINED_COUNT
-				&& j1>=0 && j1<BLOCK_CHAINED_COUNT)
-				outputLayerTransfer.stoneLayer[i0][j0]=stoneLayer[i1][j1];
-			else{
-				if(i0%2==0 && j0%2==0)
-					outputLayerTransfer.stoneLayer[i0][j0]=5;
+	if(flag1 || flag2){//выдадим, что знаем, остальное по одному уровню
+		for(int i0=0,i1=indexX1; i1<indexX2; ++i1, ++i0){
+			for(int j0=0, j1=indexZ1; j1<indexZ2; ++j1, ++j0){
+				if(i1>=0 && i1<BLOCK_CHAINED_COUNT
+					&& j1>=0 && j1<BLOCK_CHAINED_COUNT)
+					outputLayerTransfer.stoneLayer[i0][j0]=stoneLayer[i1][j1];
 				else
-					outputLayerTransfer.stoneLayer[i0][j0]=5;
+					outputLayerTransfer.stoneLayer[i0][j0]=8;
+			}
+		}
+	}
+	else{//иначе выдадим один уровень (просто для теста)
+		for(int i=0; i<BLOCK_COUNT; ++i){
+			for(int j=0; j<BLOCK_COUNT; ++j){
+				if(i%2 == 0 && j%2 ==0)
+					outputLayerTransfer.stoneLayer[i][j]=5;
+				else
+					outputLayerTransfer.stoneLayer[i][j]=10;
 			}
 		}
 	}
@@ -68,7 +55,8 @@ int WorldLayerHolder::random(int min,int max,int seed,int x,int z){
 	int ym105467       =609;  
 	int ym105943       =554;  
 
-	for (int i = 0; i < 15; i++) {
+	//for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 2; i++) {
 		xm7          = x % 7;
 		xm13        = x % 13;
 		xm1301081 = x % 1301081;
@@ -144,6 +132,57 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 		//уменьшаем базу
 		base/=2;
 	}
+	//сглаживание 3 на 3 с изменением середины только
+	qDebug()<<"Smoothing 1";
+	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
+		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
+			float average=stoneTmpLayer[i-1][j-1]+stoneTmpLayer[i][j-1]+stoneTmpLayer[i+1][j-1]+
+				stoneTmpLayer[i-1][j]+stoneTmpLayer[i][j]+stoneTmpLayer[i+1][j]+
+				stoneTmpLayer[i-1][j+1]+stoneTmpLayer[i][j+1]+stoneTmpLayer[i+1][j+1];
+			average/=9;
+			stoneTmpLayer[i][j]=average;
+		}
+
+	qDebug()<<"Smoothing 2";
+	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
+		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
+			float average=stoneTmpLayer[i-1][j-1]+stoneTmpLayer[i][j-1]+stoneTmpLayer[i+1][j-1]+
+				stoneTmpLayer[i-1][j]+stoneTmpLayer[i][j]+stoneTmpLayer[i+1][j]+
+				stoneTmpLayer[i-1][j+1]+stoneTmpLayer[i][j+1]+stoneTmpLayer[i+1][j+1];
+			average/=9;
+			stoneTmpLayer[i][j]=average;
+		}
+
+	qDebug()<<"Smoothing 3";
+	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
+		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
+			float average=stoneTmpLayer[i-1][j-1]+stoneTmpLayer[i][j-1]+stoneTmpLayer[i+1][j-1]+
+				stoneTmpLayer[i-1][j]+stoneTmpLayer[i][j]+stoneTmpLayer[i+1][j]+
+				stoneTmpLayer[i-1][j+1]+stoneTmpLayer[i][j+1]+stoneTmpLayer[i+1][j+1];
+			average/=9;
+			stoneTmpLayer[i][j]=average;
+		}
+
+	qDebug()<<"Smoothing 4";
+	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
+		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
+			float average=stoneTmpLayer[i-1][j-1]+stoneTmpLayer[i][j-1]+stoneTmpLayer[i+1][j-1]+
+				stoneTmpLayer[i-1][j]+stoneTmpLayer[i][j]+stoneTmpLayer[i+1][j]+
+				stoneTmpLayer[i-1][j+1]+stoneTmpLayer[i][j+1]+stoneTmpLayer[i+1][j+1];
+			average/=9;
+			stoneTmpLayer[i][j]=average;
+		}
+
+	qDebug()<<"Smoothing 5";
+	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
+		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
+			float average=stoneTmpLayer[i-1][j-1]+stoneTmpLayer[i][j-1]+stoneTmpLayer[i+1][j-1]+
+				stoneTmpLayer[i-1][j]+stoneTmpLayer[i][j]+stoneTmpLayer[i+1][j]+
+				stoneTmpLayer[i-1][j+1]+stoneTmpLayer[i][j+1]+stoneTmpLayer[i+1][j+1];
+			average/=9;
+			stoneTmpLayer[i][j]=average;
+		}
+
 	//переведем временный слой в основной слой
 	for(int i=0; i<BLOCK_CHAINED_COUNT; ++i){
 		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j){

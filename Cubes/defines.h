@@ -12,6 +12,7 @@ const QString LOADING_SPLASH_SCREEN_NAME="loading_splash_screen.png";
 const int MAX_STRING_LEN_FOR_ARRAYS=200;//def.200. гЮДЮЕР ПЮГЛЕП ЛЮЯЯХБЮ ДКЪ МЮГБЮМХЪ ОСРХ РЕЙЯРСПШ. мСФМН ДКЪ МЕЙ. ОПЕНАПЮГНБЮМХИ
 //world numbers
 const int CHUNKS_COUNT=41; //def 65(31) йнк-бн вюмйнб он ндмни ярнпнме, ре бяецн ху CHUNK_COUNT*CHUNK_COUNT
+const int CHUNKS_PRELOAD_COUNT=5;//def 5 йнк-бн опедгюцпсфюелшу вюмйнб он ндмни ярнпнме
 const int BLOCK_CHAINED_COUNT=4097;//def 4097 тнплскю 2*2^X+1 йнкхвеярбн яжеокеммшу(аег ьбнб) акнйнб
 							//пюглеп да анкэье пюглепю ндмнцн вюмйю
 const int BLOCK_COUNT=17;//def 17(15) йнк-бн вюмйнб он ндмни ярнпнме, ре бяецн ху BLOCK_COUNT*BLOCK_COUNT*BLOCK_HEIGHT_COUNT
@@ -42,6 +43,6 @@ const int TYPE1=1;//random landscape that is less smoothed
 const int TYPE2=2;//simple sinus landscape
 const int TYPE3=3;//real landscape
 const int CHOSE_LANDSCAPE=TYPE3;//current landscape
-const int SEED=355234;//seed. Defines landscape
+const int SEED=27561005;//seed. Defines landscape
 //math
 const double PI=3.14159265;//def 3.14159265

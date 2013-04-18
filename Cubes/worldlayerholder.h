@@ -11,7 +11,6 @@ class LayerTransfer;
 class WorldLayerHolder{
 	//variables
 private:
-	GameMain* gameMain;
 	static const int seed=SEED;
 	static const int STONE_MIN=2;//мин. высота камня
 	static const int STONE_MAX=58;//макс. высота камня(от нуля до этого значения)
@@ -28,7 +27,7 @@ private:
 	void stoneMakeSquare(int indexLeftBackX,int indexLeftBackZ,int indexRightFrontX, int indexRightFrontZ, float stoneTmpLayer[BLOCK_CHAINED_COUNT][BLOCK_CHAINED_COUNT]);//square step for stone layer
 	void stoneMakeDiamond(int indexBackX,int indexBackZ,int indexRightX, int indexRightZ,float stoneTmpLayer[BLOCK_CHAINED_COUNT][BLOCK_CHAINED_COUNT]);//diamond step for stone layer
 public:
-	WorldLayerHolder(GameMain* gameMainPtr);
+	WorldLayerHolder();
 	void updateLayerTransferForChunk(int coorX,int coorZ,LayerTransfer& outputLayerTransfer);//changes outputLayerTransfer according to the requesting chunk
 };
 
