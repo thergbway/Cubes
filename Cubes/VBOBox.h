@@ -13,7 +13,9 @@ class Chunk;
 class VBOBoxPrebuild;
 class VBOBoxTransferInfo;
 
-VBOBoxTransferInfo updateGraphicsArraysForChunk(std::vector<GLint> &verticesFinal,std::vector<GLfloat> &texturesFinal,GameMain* gameMain,Chunk* chunk,bool isPreloading,int chNumX,int chNumZ);
+VBOBoxTransferInfo updateGraphicsArraysForChunk(std::vector<GLint> &verticesFinal,std::vector<GLfloat> &texturesFinal,
+	GameMain* gameMain,Chunk* chunk,int chNumX,int chNumZ,bool isPreloading,
+	Chunk* chBackPreloaded = nullptr,Chunk* chFrontPreloaded = nullptr,Chunk* chLeftPreloaded = nullptr,Chunk* chRightPreloaded = nullptr);//функция, заносящая графическую геометрию в передаваемые векторы и отдающая информацию дополнительную
 
 class VBOBox{
 private:
@@ -80,6 +82,8 @@ private:
 
 	//functions
 public:
+	VBOBoxPrebuild(GameMain* gameMain, Chunk* chunk,
+		Chunk* chBackPreloaded,Chunk* chFrontPreloaded,Chunk* chLeftPreloaded,Chunk* chRightPreloaded);
 	void* operator new(size_t) throw(std::bad_alloc);
 	void operator delete(void*);
 private:

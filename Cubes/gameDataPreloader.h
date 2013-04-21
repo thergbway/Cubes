@@ -18,6 +18,8 @@ const int CHUNKS_PRELOAD_BORDER=CHUNKS_PRELOAD_COUNT;
 const int CHUNKS_PRELOAD_LONG_SIDE=CHUNKS_PRELOAD_BORDER*2+CHUNKS_COUNT;
 const int CHUNKS_PRELOAD_SHORT_SIDE=CHUNKS_COUNT;
 const int CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH=CHUNKS_PRELOAD_LONG_SIDE*2+CHUNKS_PRELOAD_SHORT_SIDE*2;
+const int CHUNKS_PRELOAD_SUB_BORDER=1;//необходим для правильного создания VBOBoxPrebuild
+const int CHUNKS_PRELOAD_SUB_SIDE=CHUNKS_COUNT;//эти чанки пойдут по периметру основного поля уже загруженный
 
 class GameDataPreloader{
 	//Класс предоставляет пользователям данные по чанкам, VBOBox, WorldLayerHolder.
