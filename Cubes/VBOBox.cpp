@@ -7,12 +7,12 @@ unsigned char VBOBox::pool[VBOBOX_HEAP_SIZE*sizeof(VBOBox)];//для динамического 
 //~VBOBox ONLY
 
 //VBOBoxPrebuild ONLY
-const int VBOBOXPREBUILD_HEAP_SIZE=CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH*CHUNKS_PRELOAD_BORDER;
+const int VBOBOXPREBUILD_HEAP_SIZE=VBOBOXPREBUILD_ENTIRE_LENGTH;
 bool VBOBoxPrebuild::alloc_map[VBOBOXPREBUILD_HEAP_SIZE];//для динамического выделения памяти
 unsigned char VBOBoxPrebuild::pool[VBOBOXPREBUILD_HEAP_SIZE*sizeof(VBOBox)];//для динамического выделения памяти
 //~VBOBoxPrebuild ONLY
 
-VBOBoxTransferInfo updateGraphicsArraysForChunk(std::vector<GLint> &verticesFinal,std::vector<GLfloat> &texturesFinal,
+VBOBoxTransferInfo updateGraphicsArraysForChunk(std::array<GLint,SIZE_OF_VBOPREBUILDS_ARRAYS> &verticesFinal,std::array<GLfloat,SIZE_OF_VBOPREBUILDS_ARRAYS> &texturesFinal,
 	GameMain* gameMain,Chunk* _chunkPtr,int chNumX,int chNumZ,bool isPreloading,
 	Chunk* chBackPreloaded /*= nullptr*/,Chunk* chFrontPreloaded /*= nullptr*/,
 	Chunk* chLeftPreloaded /*= nullptr*/,Chunk* chRightPreloaded /*= nullptr*/){
@@ -85,8 +85,14 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(std::vector<GLint> &verticesFina
 
 				//get the transparency around the block
 				BlockTransparencyAround blocksTransAround(true,true,true,true,true,true);//предварительное создание объекта
-				if(!isPreloading)
+				if(!isPreloading){
+					if(gameMain == nullptr){
+						qDebug()<<"VBOBoxTransferInfo updateGraphicsArraysForChunk got nullptr as GameMain* when it was not preloading, check for mistakes! Program will be crashed";
+						while(true)
+							qDebug()<<"Critical error!";
+					}
 					blocksTransAround=gameMain->world->getBlockTransparencyAround(chNumX,chNumZ,blX,blY,blZ);
+				}
 				else{//isPreloading == true
 					//создадим объект вручную
 					blocksTransAround=BlockTransparencyAround(
@@ -761,33 +767,68 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(std::vector<GLint> &verticesFina
 			}
 		}
 	}//конец создания предварительных массивов
-
+	qDebug()<<"point in1";
 	//объединим массивы вершин и текстурных координат
-	verticesFinal.reserve(10000000);
-	texturesFinal.reserve(10000000);
 	//заполним verticesFinal
-	for(std::vector<GLint>::iterator iter=verticesDirt.begin();iter != verticesDirt.end();++iter)
-		verticesFinal.push_back(*iter);
-	for(std::vector<GLint>::iterator iter=verticesGrassTop.begin();iter != verticesGrassTop.end();++iter)
-		verticesFinal.push_back(*iter);
-	for(std::vector<GLint>::iterator iter=verticesGrassSide.begin();iter != verticesGrassSide.end();++iter)
-		verticesFinal.push_back(*iter);
-	for(std::vector<GLint>::iterator iter=verticesStone.begin();iter != verticesStone.end();++iter)
-		verticesFinal.push_back(*iter);
-	for(std::vector<GLint>::iterator iter=verticesSand.begin();iter != verticesSand.end();++iter)
-		verticesFinal.push_back(*iter);
-	//заполним texturesFinal
-	for(std::vector<GLfloat>::iterator iter=texturesDirt.begin();iter != texturesDirt.end();++iter)
-		texturesFinal.push_back(*iter);
-	for(std::vector<GLfloat>::iterator iter=texturesGrassTop.begin();iter != texturesGrassTop.end();++iter)
-		texturesFinal.push_back(*iter);
-	for(std::vector<GLfloat>::iterator iter=texturesGrassSide.begin();iter != texturesGrassSide.end();++iter)
-		texturesFinal.push_back(*iter);
-	for(std::vector<GLfloat>::iterator iter=texturesStone.begin();iter != texturesStone.end();++iter)
-		texturesFinal.push_back(*iter);
-	for(std::vector<GLfloat>::iterator iter=texturesSand.begin();iter != texturesSand.end();++iter)
-		texturesFinal.push_back(*iter);
+	//check for sizes
+	if(verticesDirt.size()+verticesGrassTop.size()+verticesGrassSide.size()+verticesStone.size()+verticesSand.size() >= SIZE_OF_VBOPREBUILDS_ARRAYS){
+		qDebug()<<"VBOBox.cpp: size of verticesFinal will be that SIZE_OF_VBOPREBUILD. Check for error!";
+		while(true)
+			qDebug()<<"Critical error!";
+	}
 
+	int currVertIndex=0;
+	for(std::vector<GLint>::iterator iter=verticesDirt.begin();iter != verticesDirt.end();++iter){
+		verticesFinal[currVertIndex]=*iter;
+		++currVertIndex;
+	}
+	for(std::vector<GLint>::iterator iter=verticesGrassTop.begin();iter != verticesGrassTop.end();++iter){
+		verticesFinal[currVertIndex]=*iter;
+		++currVertIndex;
+	}
+	for(std::vector<GLint>::iterator iter=verticesGrassSide.begin();iter != verticesGrassSide.end();++iter){
+		verticesFinal[currVertIndex]=*iter;
+		++currVertIndex;
+	}
+	for(std::vector<GLint>::iterator iter=verticesStone.begin();iter != verticesStone.end();++iter){
+		verticesFinal[currVertIndex]=*iter;
+		++currVertIndex;
+	}
+	for(std::vector<GLint>::iterator iter=verticesSand.begin();iter != verticesSand.end();++iter){
+		verticesFinal[currVertIndex]=*iter;
+		++currVertIndex;
+	}
+	qDebug()<<"point in2";
+
+	//заполним texturesFinal
+	//check for sizes
+	if(texturesDirt.size()+texturesGrassTop.size()+texturesGrassSide.size()+texturesStone.size()+texturesSand.size() >= SIZE_OF_VBOPREBUILDS_ARRAYS){
+		qDebug()<<"VBOBox.cpp: size of texturesFinal will be more that SIZE_OF_VBOPREBUILD. Check for error!";
+		while(true)
+			qDebug()<<"Critical error!";
+	}
+	int currTextIndex=0;
+	for(std::vector<GLfloat>::iterator iter=texturesDirt.begin();iter != texturesDirt.end();++iter){
+		texturesFinal[currTextIndex]=*iter;
+		++currTextIndex;
+	}
+	for(std::vector<GLfloat>::iterator iter=texturesGrassTop.begin();iter != texturesGrassTop.end();++iter){
+		texturesFinal[currTextIndex]=*iter;
+		++currTextIndex;
+	}
+	for(std::vector<GLfloat>::iterator iter=texturesGrassSide.begin();iter != texturesGrassSide.end();++iter){
+		texturesFinal[currTextIndex]=*iter;
+		++currTextIndex;
+	}
+	for(std::vector<GLfloat>::iterator iter=texturesStone.begin();iter != texturesStone.end();++iter){
+		texturesFinal[currTextIndex]=*iter;
+		++currTextIndex;
+	}
+	for(std::vector<GLfloat>::iterator iter=texturesSand.begin();iter != texturesSand.end();++iter){
+		texturesFinal[currTextIndex]=*iter;
+		++currTextIndex;
+	}
+	qDebug()<<"point in3";
 	//сколько каких видов точек надо рисовать
 	pointsOfDirtToDraw=verticesDirt.size()/3;
 	pointsOfGrassTopToDraw=verticesGrassTop.size()/3;
@@ -829,14 +870,22 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	coorX=chunkPtr->getCoordX();
 	coorZ=chunkPtr->getCoordZ();
 
-	//объединим массивы вершин и текстурных координат
+	//финальные массивы вершин и текстурных координат
 	std::vector<GLint> verticesFinal;
 	std::vector<GLfloat> texturesFinal;
 
 	//заполним массивы
 	VBOBoxTransferInfo vBOBoxTransferInfo;
-	vBOBoxTransferInfo=updateGraphicsArraysForChunk(verticesFinal,texturesFinal,gameMain,chunkPtr,
-		chNumX,chNumZ,false);
+	std::array<GLint,SIZE_OF_VBOPREBUILDS_ARRAYS> vertTemp;
+	std::array<GLfloat,SIZE_OF_VBOPREBUILDS_ARRAYS> textTemp;
+	vBOBoxTransferInfo=updateGraphicsArraysForChunk(vertTemp,textTemp,gameMain,chunkPtr,
+		chNumX,chNumZ,false,nullptr,nullptr,nullptr,nullptr);
+	//copy
+	const int entireSize=vBOBoxTransferInfo.pointsOfDirtToDraw*3 + vBOBoxTransferInfo.pointsOfGrassTopToDraw*3 + vBOBoxTransferInfo.pointsOfGrassSideToDraw*3 + vBOBoxTransferInfo.pointsOfSandToDraw*3 + vBOBoxTransferInfo.pointsOfStoneToDraw*3;
+	for(int i=0; i<entireSize; ++i){
+		verticesFinal.push_back(vertTemp[i]);
+		texturesFinal.push_back(textTemp[i]);
+	}
 
 	//сколько каких видов точек надо рисовать
 	pointsOfDirtToDraw=			vBOBoxTransferInfo.pointsOfDirtToDraw;
@@ -939,8 +988,6 @@ void VBOBox::operator delete(void* ptr){
 
 VBOBoxPrebuild::VBOBoxPrebuild(GameMain* gameMain, Chunk* chunkPtr
 	,Chunk* chBackPreloaded,Chunk* chFrontPreloaded,Chunk* chLeftPreloaded,Chunk* chRightPreloaded){
-
-	chunkId=chunkPtr->getId();
 
 	//обновим векторы получим выходные данные
 	VBOBoxTransferInfo vBOBoxTransferInfo=updateGraphicsArraysForChunk(verticesFinal,texturesFinal,gameMain

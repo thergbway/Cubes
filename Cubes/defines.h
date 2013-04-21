@@ -28,8 +28,8 @@ const int SAND=5;//def 5
 const int MIN_WIDTH=400;//def 600
 const int MIN_HEIGHT=400;//def 600
 const int CHUNKS_TO_DRAW=33;//def 51(13) йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
-const int VBOBOX_PRELOAD_EXTRA_BUFFER=0;//def 0 йнк-бн днонкмхрекэмшу опедгюцпсфеммшу цпютхвеяйху назейрнб
 const double PARAMETER_LEN=1.0;//def 100.0 оюпюлерп дкъ бшвхякемхъ рнвйх, йсдю ялнрпхр хцпнй
+const int SIZE_OF_VBOPREBUILDS_ARRAYS=200000000;//def 10000000. лЮЙЯ ЙНК-БН РНВЕЙ ЙНРНПНЕ ЛНФЕР УПЮМХРЭ ЙКЮЯЯ ОНД БЕПЬХМШ, Ю РЮЙФЕ ОНД РЕЙЯРСПШ
 //graphics-textures
 const int TEXTURES_COUNT=50;//def. 50 люйяхлюкэмне вхякн рейярсп
 const int DIRT_TEX_INDEX=0;//def. 0 хмдейя рейярспш гелкх б люяяхбе рейярсп. да лемэье TEXTURES_COUNT х ме янбоюдюрэ я дпсцхлх хмдейяюлх

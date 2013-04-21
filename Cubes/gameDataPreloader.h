@@ -22,11 +22,12 @@ const int CHUNKS_PRELOAD_BORDER=CHUNKS_PRELOAD_COUNT;
 const int CHUNKS_PRELOAD_LONG_SIDE=CHUNKS_PRELOAD_BORDER*2+CHUNKS_COUNT;
 const int CHUNKS_PRELOAD_SHORT_SIDE=CHUNKS_COUNT;
 const int CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH=CHUNKS_PRELOAD_LONG_SIDE*2+CHUNKS_PRELOAD_SHORT_SIDE*2;
-const int CHUNKS_PRELOAD_SUB_LONG_SIDE=CHUNKS_COUNT;//эти чанки пойдут по периметру основного пол€ загруженного
-const int CHUNKS_PRELOAD_SUB_SHORT_SIDE=CHUNKS_COUNT-2;//эти чанки пойдут по периметру основного пол€ загруженного
-const int CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH=CHUNKS_PRELOAD_SUB_LONG_SIDE*2+CHUNKS_PRELOAD_SUB_SHORT_SIDE*2;
 
-const int VBOBOXPREBUILD_PRELOAD_COUNT=CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH*(CHUNKS_PRELOAD_BORDER-1)+VBOBOX_PRELOAD_EXTRA_BUFFER;
+const int ONE_CHUNK=1;
+const int VBOBOXPREBUILD_LONG_SIDE=CHUNKS_COUNT+2*ONE_CHUNK;
+const int VBOBOXPREBUILD_SHORT_SIDE=CHUNKS_COUNT;
+const int VBOBOXPREBUILD_ENTIRE_LENGTH=2*VBOBOXPREBUILD_LONG_SIDE+2*VBOBOXPREBUILD_SHORT_SIDE;
+
 
 class GameDataPreloader{
 	// ласс предоставл€ет пользовател€м данные по чанкам, VBOBox, WorldLayerHolder.
@@ -46,8 +47,7 @@ private:
 	bool mainUpdCyclePaused;//флаг, контролируемый потоком
 	bool mainUpdCycleRedFlag;//флаг дл€ потока. Ќеобходимо остановитьс€
 	Chunk* chunksPreload[CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH][CHUNKS_PRELOAD_BORDER];
-	Chunk* chunksSubPreload[CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH];
-	VBOBoxPrebuild* vBOBoxPrebuilds[VBOBOXPREBUILD_PRELOAD_COUNT];
+	VBOBoxPrebuild* vBOBoxPrebuild[VBOBOXPREBUILD_ENTIRE_LENGTH];//массив предзагруженных VBOBoxPrebuild
 	//functions
 public:
 	GameDataPreloader(World* world);

@@ -2,6 +2,7 @@
 #pragma warning(disable: 4290)
 #include <QGLBuffer>
 #include <new>
+#include <array>
 #include <cstddef>//size_t
 #include "gameMain.h"
 #include "defines.h"
@@ -63,7 +64,6 @@ private:
 	static bool alloc_map[];//для динамического выделения памяти
 	static unsigned char pool[];//для динамического выделения памяти
 
-	int chunkId;//id of appropriate chunk
 	//количества точек
 	int pointsOfDirtToDraw;
 	int pointsOfGrassTopToDraw;
@@ -77,9 +77,8 @@ private:
 	int offsetOfStone;
 	int offsetOfSand;
 	//массивы вершинных и текстурных кооринат (финальные)
-	std::vector<GLint> verticesFinal;
-	std::vector<GLfloat> texturesFinal;
-
+	std::array<GLint,SIZE_OF_VBOPREBUILDS_ARRAYS> verticesFinal;
+	std::array<GLfloat,SIZE_OF_VBOPREBUILDS_ARRAYS> texturesFinal;
 	//functions
 public:
 	VBOBoxPrebuild(GameMain* gameMain, Chunk* chunk,

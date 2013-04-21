@@ -147,6 +147,9 @@
     <ClInclude Include="VBOBox.h">
       <Filter>.h</Filter>
     </ClInclude>
+    <ClInclude Include="simpleArray.h">
+      <Filter>.h</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graphics.h">

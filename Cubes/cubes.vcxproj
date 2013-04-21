@@ -54,6 +54,7 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="gameDataPreloader.h" />
+    <ClInclude Include="simpleArray.h" />
     <ClInclude Include="VBOBox.h" />
     <ClInclude Include="worldlayerholder.h" />
     <CustomBuild Include="gameMain.h">

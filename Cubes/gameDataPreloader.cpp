@@ -33,12 +33,9 @@ GameDataPreloader::GameDataPreloader(World* worldPtr)
 		for(int i=0; i<CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH; ++i)
 			for(int j=0; j<CHUNKS_PRELOAD_BORDER; ++j)
 				chunksPreload[i][j]=nullptr;
-		//and one else
-		for(int i=0; i<CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH; ++i)
-			chunksSubPreload[i]=nullptr;
-		//сбросим массив VBOBoxPrebuilds
-		for(int i=0;i<VBOBOXPREBUILD_PRELOAD_COUNT;++i)
-			vBOBoxPrebuilds[i]=nullptr;
+		//and VBOBoxPrebuilds
+		for(int i=0; i<VBOBOXPREBUILD_ENTIRE_LENGTH; ++i)
+			vBOBoxPrebuild[i]=nullptr;
 }
 
 GameDataPreloader::~GameDataPreloader(){
@@ -64,14 +61,17 @@ Chunk* GameDataPreloader::getNewChunkPtr(int coordX, int coordZ){
 	}
 	//чанк не был найден(не предзагружен)
 	Chunk* toReturn=new Chunk(world,worldLayerHolder,coordX,coordZ,getNewChunkId());
-	//qDebug()<<"cannot find chunk in preloads x="<<coordX<<"z="<<coordZ;
+	qDebug()<<"cannot find chunk in preloads x="<<coordX<<"z="<<coordZ;
 	unpauseMainUpdCycle();
 	return toReturn;
 
 }
 
 VBOBox* GameDataPreloader::getNewVBOBoxPtr(int chNumX,int chNumZ,GameMain* gameMain,GLuint textures[TEXTURES_COUNT]){
-	return new VBOBox(chNumX,chNumZ,gameMain,textures);
+	pauseMainUpdCycle();
+	VBOBox* toReturn=new VBOBox(chNumX,chNumZ,gameMain,textures);
+	unpauseMainUpdCycle();
+	return toReturn;
 }
 
 void GameDataPreloader::pauseMainUpdCycle(){
@@ -104,6 +104,8 @@ void GameDataPreloader::mainUpdCycle(){
 	int oldMainChX=115468165;//фиктивная координата(случайное число)
 	int oldMainChZ=-11256148;//фиктивная координата(случайное число)
 
+	bool entireCycleIsDone=false;//цикл полностью пройден
+
 	while(true){//выполнять вечно
 		if(!mainUpdCycleRedFlag){//можно выполнять
 			mainUpdCyclePaused=false;
@@ -117,8 +119,11 @@ void GameDataPreloader::mainUpdCycle(){
 			const int mainChX=plChX-(CHUNKS_COUNT-1)/2*BLOCK_COUNT*CUBE_SIZE;
 			const int mainChZ=plChZ-(CHUNKS_COUNT-1)/2*BLOCK_COUNT*CUBE_SIZE;
 
-			if(oldMainChX != mainChX || oldMainChZ != mainChZ){
-				//если координаты главного чанка изменились
+			if(oldMainChX != mainChX || oldMainChZ != mainChZ || entireCycleIsDone == false){
+				//если координаты главного чанка изменились или на прошлой итерации
+				//цикл не был пройден до конца
+
+				entireCycleIsDone = false;//цикл пройден не до конца
 
 				//MAIN CHUNKS
 				//update back side chunks
@@ -194,67 +199,122 @@ void GameDataPreloader::mainUpdCycle(){
 				}//finished right side updating
 				//~~END MAIN CHUNKS
 
-				//SUB CHUNKS
-				//update back side sub chunks
-				const int mainBackSubChX=mainChX;
-				const int mainBackSubChZ=mainChZ;
-				for(int i=0; i<CHUNKS_PRELOAD_SUB_LONG_SIDE; ++i){
-						if(mainUpdCycleRedFlag)
-							goto emergencyExit;//экстренный выход, если приказано остановить поток
+				//STARTING PREBUILDS VBOBOX
+				//вычислим координаты главного чанка для предзагрузки графических объектов
+				const int mainVBOChX=plChX-((CHUNKS_TO_DRAW-1)/2+ONE_CHUNK)*BLOCK_COUNT*CUBE_SIZE;
+				const int mainVBOChZ=plChZ-((CHUNKS_TO_DRAW-1)/2+ONE_CHUNK)*BLOCK_COUNT*CUBE_SIZE;
 
-						//find current coordinates
-						int currChX=mainBackSubChX+i*BLOCK_COUNT*CUBE_SIZE;
-						int currChZ=mainBackSubChZ;
-						if(chunksSubPreload[i] != nullptr)//если там что-то было
-							delete chunksSubPreload[i];
-						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
-				}//finished back side sub updating
+				//update back VBOBoxPrebuilds
+				const int mainBackVBOBoxPrebuildsX=mainVBOChX;
+				const int mainBackVBOBoxPrebuildsZ=mainVBOChZ;
+				for(int i=0; i < VBOBOXPREBUILD_LONG_SIDE; ++i){
+					if(mainUpdCycleRedFlag)
+						goto emergencyExit;//экстренный выход, если приказано остановить поток
+					qDebug()<<"point1 i="<<i;
+					//find current coordinates
+					int currChX=mainBackVBOBoxPrebuildsX+i*BLOCK_COUNT*CUBE_SIZE;
+					int currChZ=mainBackVBOBoxPrebuildsZ;
+					Chunk* tempCh=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+					Chunk* tempBackCh=new Chunk(world,worldLayerHolder,currChX,currChZ-BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempRightCh=new Chunk(world,worldLayerHolder,currChX+BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					Chunk* tempFrontCh=new Chunk(world,worldLayerHolder,currChX,currChZ+BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempLeftCh=new Chunk(world,worldLayerHolder,currChX-BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					qDebug()<<"point2 i="<<i;
+					if(vBOBoxPrebuild[i] != nullptr)
+						delete vBOBoxPrebuild[i];
+					qDebug()<<"point3 i="<<i;
+					vBOBoxPrebuild[i]=new VBOBoxPrebuild(nullptr, tempCh,tempBackCh,tempFrontCh,tempLeftCh,tempRightCh);
+					qDebug()<<"point4 i="<<i;
+					delete tempCh;
+					delete tempBackCh;
+					delete tempFrontCh;
+					delete tempLeftCh;
+					delete tempRightCh;
+					qDebug()<<"point5 i="<<i;
+				}
 
-				//update left sub side chunks
-				const int mainLeftSubChX=mainChX+(CHUNKS_COUNT-1)*BLOCK_COUNT*CUBE_SIZE;
-				const int mainLeftSubChZ=mainChZ+BLOCK_COUNT*CUBE_SIZE;
-				for(int i=CHUNKS_PRELOAD_SUB_LONG_SIDE, iChInd=0; i<CHUNKS_PRELOAD_SUB_LONG_SIDE+CHUNKS_PRELOAD_SUB_SHORT_SIDE; ++i,++iChInd){
-						if(mainUpdCycleRedFlag)
-							goto emergencyExit;//экстренный выход, если приказано остановить поток
+				//update front VBOBoxPrebuilds
+				const int mainFrontVBOBoxPrebuildsX=mainVBOChX;
+				const int mainFrontVBOBoxPrebuildsZ=mainVBOChZ+CHUNKS_TO_DRAW*BLOCK_COUNT*CUBE_SIZE;
+				for(int i=VBOBOXPREBUILD_LONG_SIDE+VBOBOXPREBUILD_SHORT_SIDE; i < VBOBOXPREBUILD_LONG_SIDE*2+VBOBOXPREBUILD_SHORT_SIDE; ++i){
+					if(mainUpdCycleRedFlag)
+						goto emergencyExit;//экстренный выход, если приказано остановить поток
 
-						//find current coordinates
-						int currChX=mainLeftSubChX;
-						int currChZ=mainLeftSubChZ+iChInd*BLOCK_COUNT*CUBE_SIZE;
-						if(chunksSubPreload[i] != nullptr)//если там что-то было
-							delete chunksSubPreload[i];
-						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
-				}//finished left sub side updating
+					//find current coordinates
+					int currChX=mainFrontVBOBoxPrebuildsX+i*BLOCK_COUNT*CUBE_SIZE;
+					int currChZ=mainFrontVBOBoxPrebuildsZ;
+					Chunk* tempCh=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+					Chunk* tempBackCh=new Chunk(world,worldLayerHolder,currChX,currChZ-BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempRightCh=new Chunk(world,worldLayerHolder,currChX+BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					Chunk* tempFrontCh=new Chunk(world,worldLayerHolder,currChX,currChZ+BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempLeftCh=new Chunk(world,worldLayerHolder,currChX-BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
 
-				//update front sub side chunks
-				const int mainFrontSubChX=mainChX;
-				const int mainFrontSubChZ=mainChZ+(CHUNKS_COUNT-1)*BLOCK_COUNT*CUBE_SIZE;
-				for(int i=CHUNKS_PRELOAD_SUB_LONG_SIDE+CHUNKS_PRELOAD_SUB_SHORT_SIDE,iChInd=0; i<CHUNKS_PRELOAD_SUB_LONG_SIDE*2+CHUNKS_PRELOAD_SUB_SHORT_SIDE; ++i,++iChInd){
-						if(mainUpdCycleRedFlag)
-							goto emergencyExit;//экстренный выход, если приказано остановить поток
+					if(vBOBoxPrebuild[i] != nullptr)
+						delete vBOBoxPrebuild[i];
+					vBOBoxPrebuild[i]=new VBOBoxPrebuild(nullptr, tempCh,tempBackCh,tempFrontCh,tempLeftCh,tempRightCh);
 
-						//find current coordinates
-						int currChX=mainFrontSubChX+iChInd*BLOCK_COUNT*CUBE_SIZE;
-						int currChZ=mainFrontSubChZ;
-						if(chunksSubPreload[i] != nullptr)//если там что-то было
-							delete chunksSubPreload[i];
-						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
-				}//finished front sub side updating
+					delete tempCh;
+					delete tempBackCh;
+					delete tempFrontCh;
+					delete tempLeftCh;
+					delete tempRightCh;
+				}
 
-				//update right sub side chunks
-				const int mainRightSubChX=mainChX;
-				const int mainRightSubChZ=mainChZ+BLOCK_COUNT*CUBE_SIZE;
-				for(int i=CHUNKS_PRELOAD_SUB_LONG_SIDE*2+CHUNKS_PRELOAD_SUB_SHORT_SIDE, iChInd=0; i<CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH; ++i,++iChInd){
-						if(mainUpdCycleRedFlag)
-							goto emergencyExit;//экстренный выход, если приказано остановить поток
+				//update left VBOBoxPrebuilds
+				const int mainLeftVBOBoxPrebuildsX=mainVBOChX;
+				const int mainLeftVBOBoxPrebuildsZ=mainVBOChZ+ONE_CHUNK*BLOCK_COUNT*CUBE_SIZE;
+				for(int i=VBOBOXPREBUILD_LONG_SIDE*2+VBOBOXPREBUILD_SHORT_SIDE; i < VBOBOXPREBUILD_ENTIRE_LENGTH; ++i){
+					if(mainUpdCycleRedFlag)
+						goto emergencyExit;//экстренный выход, если приказано остановить поток
 
-						//find current coordinates
-						int currChX=mainRightSubChX;
-						int currChZ=mainRightSubChZ+iChInd*BLOCK_COUNT*CUBE_SIZE;
-						if(chunksSubPreload[i] != nullptr)//если там что-то было
-							delete chunksSubPreload[i];
-						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
-				}//finished right sub side updating
-				//~~END SUB CHUNKS
+					//find current coordinates
+					int currChX=mainLeftVBOBoxPrebuildsX;
+					int currChZ=mainLeftVBOBoxPrebuildsZ+i*BLOCK_COUNT*CUBE_SIZE;
+					Chunk* tempCh=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+					Chunk* tempBackCh=new Chunk(world,worldLayerHolder,currChX,currChZ-BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempRightCh=new Chunk(world,worldLayerHolder,currChX+BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					Chunk* tempFrontCh=new Chunk(world,worldLayerHolder,currChX,currChZ+BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempLeftCh=new Chunk(world,worldLayerHolder,currChX-BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					
+					if(vBOBoxPrebuild[i] != nullptr)
+						delete vBOBoxPrebuild[i];
+					vBOBoxPrebuild[i]=new VBOBoxPrebuild(nullptr, tempCh,tempBackCh,tempFrontCh,tempLeftCh,tempRightCh);
+
+					delete tempCh;
+					delete tempBackCh;
+					delete tempFrontCh;
+					delete tempLeftCh;
+					delete tempRightCh;
+				}
+
+				//update right VBOBoxPrebuilds
+				const int mainRightVBOBoxPrebuildsX=mainVBOChX+(ONE_CHUNK+CHUNKS_TO_DRAW)*BLOCK_COUNT*CUBE_SIZE;
+				const int mainRightVBOBoxPrebuildsZ=mainVBOChZ+ONE_CHUNK*BLOCK_COUNT*CUBE_SIZE;
+				for(int i=VBOBOXPREBUILD_LONG_SIDE; i < VBOBOXPREBUILD_LONG_SIDE+VBOBOXPREBUILD_SHORT_SIDE; ++i){
+					if(mainUpdCycleRedFlag)
+						goto emergencyExit;//экстренный выход, если приказано остановить поток
+
+					//find current coordinates
+					int currChX=mainRightVBOBoxPrebuildsX;
+					int currChZ=mainRightVBOBoxPrebuildsZ+i*BLOCK_COUNT*CUBE_SIZE;
+					Chunk* tempCh=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+					Chunk* tempBackCh=new Chunk(world,worldLayerHolder,currChX,currChZ-BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempRightCh=new Chunk(world,worldLayerHolder,currChX+BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					Chunk* tempFrontCh=new Chunk(world,worldLayerHolder,currChX,currChZ+BLOCK_COUNT*CUBE_SIZE,getNewChunkId());
+					Chunk* tempLeftCh=new Chunk(world,worldLayerHolder,currChX-BLOCK_COUNT*CUBE_SIZE,currChZ,getNewChunkId());
+					
+					if(vBOBoxPrebuild[i] != nullptr)
+						delete vBOBoxPrebuild[i];
+					vBOBoxPrebuild[i]=new VBOBoxPrebuild(nullptr, tempCh,tempBackCh,tempFrontCh,tempLeftCh,tempRightCh);
+
+					delete tempCh;
+					delete tempBackCh;
+					delete tempFrontCh;
+					delete tempLeftCh;
+					delete tempRightCh;
+				}
+
+				entireCycleIsDone = true;//цикл пройден до конца
 			}
 			emergencyExit:;
 		}

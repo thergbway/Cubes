@@ -9,7 +9,7 @@
 #include "gameDataPreloader.h"
 #include "defines.h"
 
-const int CHUNKS_HEAP_SIZE=CHUNKS_COUNT*CHUNKS_COUNT+CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH*CHUNKS_PRELOAD_BORDER+CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH;
+const int CHUNKS_HEAP_SIZE=CHUNKS_COUNT*CHUNKS_COUNT+CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH*CHUNKS_PRELOAD_BORDER+5*ONE_CHUNK;//ONE_CHUNK for temp creating
 bool Chunk::alloc_map[CHUNKS_HEAP_SIZE];//для динамического выделения памяти
 unsigned char Chunk::pool[CHUNKS_HEAP_SIZE*sizeof(Chunk)];//для динамического выделения памяти
 
