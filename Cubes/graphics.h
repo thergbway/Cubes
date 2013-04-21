@@ -12,6 +12,7 @@
 
 class GameMain;
 class VBOBox;
+class GameDataPreloader;
 
 class Graphics : public QGLWidget
 {
@@ -19,11 +20,12 @@ class Graphics : public QGLWidget
 	//members
 private:
 	GameMain* gameMain;
+	GameDataPreloader* gameDataPreloader;
 	std::map<const int,VBOBox*> VBOBoxMap;
 	GLuint textures[TEXTURES_COUNT];
 	//functions
 public:
-	Graphics(GameMain* gameMainPtr,QWidget *parent = 0);
+	Graphics(GameMain* gameMainPtr,GameDataPreloader* gameDataPreloader,QWidget *parent = 0);
 protected:
 	void initializeGL();
 	void resizeGL(int width, int height);

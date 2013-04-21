@@ -12,7 +12,7 @@ const QString LOADING_SPLASH_SCREEN_NAME="loading_splash_screen.png";
 const int MAX_STRING_LEN_FOR_ARRAYS=200;//def.200. гЮДЮЕР ПЮГЛЕП ЛЮЯЯХБЮ ДКЪ МЮГБЮМХЪ ОСРХ РЕЙЯРСПШ. мСФМН ДКЪ МЕЙ. ОПЕНАПЮГНБЮМХИ
 //world numbers
 const int CHUNKS_COUNT=41; //def 65(31) йнк-бн вюмйнб он ндмни ярнпнме, ре бяецн ху CHUNK_COUNT*CHUNK_COUNT
-const int CHUNKS_PRELOAD_COUNT=5;//def 5 йнк-бн опедгюцпсфюелшу вюмйнб он ндмни ярнпнме
+const int CHUNKS_PRELOAD_COUNT=2;//def 5 йнк-бн опедгюцпсфюелшу вюмйнб он ндмни ярнпнме
 const int BLOCK_CHAINED_COUNT=4097;//def 4097 тнплскю 2*2^X+1 йнкхвеярбн яжеокеммшу(аег ьбнб) акнйнб
 							//пюглеп да анкэье пюглепю ндмнцн вюмйю
 const int BLOCK_COUNT=17;//def 17(15) йнк-бн вюмйнб он ндмни ярнпнме, ре бяецн ху BLOCK_COUNT*BLOCK_COUNT*BLOCK_HEIGHT_COUNT
@@ -28,6 +28,7 @@ const int SAND=5;//def 5
 const int MIN_WIDTH=400;//def 600
 const int MIN_HEIGHT=400;//def 600
 const int CHUNKS_TO_DRAW=33;//def 51(13) йнк_бн вюмйнб дкъ опнпхянбйх. явхрюрэ йюй 2*у+1. да ме анкэье CHUNKS_COUNT!!!
+const int VBOBOX_PRELOAD_EXTRA_BUFFER=0;//def 0 йнк-бн днонкмхрекэмшу опедгюцпсфеммшу цпютхвеяйху назейрнб
 const double PARAMETER_LEN=1.0;//def 100.0 оюпюлерп дкъ бшвхякемхъ рнвйх, йсдю ялнрпхр хцпнй
 //graphics-textures
 const int TEXTURES_COUNT=50;//def. 50 люйяхлюкэмне вхякн рейярсп

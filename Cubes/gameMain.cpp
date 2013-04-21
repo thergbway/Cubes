@@ -13,8 +13,9 @@ GameMain::GameMain(QMainWindow* _mainWin)
 	state= new State(this);
 	kMController=new KMController(this);
 	player= new Player(this);
-	graphics= new Graphics(this);
 	world= new World(this);
+	GameDataPreloader* gameDataPreloaderPtr=world->getGameDataPreloaderPtr();
+	graphics= new Graphics(this,gameDataPreloaderPtr);
 
 	//setting timer
 	mainGameCycleTimer=new QTimer;

@@ -16,9 +16,10 @@
 #include "chunk.h"
 #include "vector3d.h"
 
-Graphics::Graphics(GameMain* gameMainPtr,QWidget *parent/*= 0*/):QGLWidget(parent)
+Graphics::Graphics(GameMain* gameMainPtr,GameDataPreloader* _gameDataPreloader,QWidget *parent/*= 0*/):QGLWidget(parent)
 {
 	gameMain=gameMainPtr;
+	gameDataPreloader=_gameDataPreloader;
 	setMinimumSize(MIN_WIDTH,MIN_HEIGHT);
 	setMouseTracking(true);//постоянный опрос мыши
 
@@ -91,7 +92,7 @@ void Graphics::paintGL(){
 		for(int j=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; j<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++j){
 			int currId=gameMain->world->getChunkId(i,j);
 			if(newVBOBoxMap.count(currId) == 0){
-				newVBOBoxMap[currId]= new VBOBox(i,j,gameMain,textures);
+				newVBOBoxMap[currId]= gameDataPreloader->getNewVBOBoxPtr(i,j,gameMain,textures);
 				gameMain->world->setVBOForChunkCreated(i,j);
 			}
 		}

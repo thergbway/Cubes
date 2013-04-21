@@ -22,6 +22,7 @@ private:
 	//functions
 public:
 	World(GameMain* gameMainPtr);
+	GameDataPreloader* getGameDataPreloaderPtr();
 	int getChunkCoordX(int chNumX,int chNumZ);
 	int getChunkCoordZ(int chNumX,int chNumZ);
 	int getChunkId(int chNumX,int chNumZ);

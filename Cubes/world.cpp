@@ -32,6 +32,10 @@ World::World(GameMain* gameMainPtr)
 			chunkUpdateMatrix[i][j]=true;
 }
 
+GameDataPreloader* World::getGameDataPreloaderPtr(){
+	return gameDataPreloader;
+}
+
 void World::updateWorld(){
 	//ищем координату главного (нулевого, см. соглашение) чанка на данный момент
 	int plX=(int)gameMain->player->getCoorX();

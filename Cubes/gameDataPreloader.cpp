@@ -33,6 +33,12 @@ GameDataPreloader::GameDataPreloader(World* worldPtr)
 		for(int i=0; i<CHUNKS_PRELOAD_ENTIRE_SIDE_LENGTH; ++i)
 			for(int j=0; j<CHUNKS_PRELOAD_BORDER; ++j)
 				chunksPreload[i][j]=nullptr;
+		//and one else
+		for(int i=0; i<CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH; ++i)
+			chunksSubPreload[i]=nullptr;
+		//сбросим массив VBOBoxPrebuilds
+		for(int i=0;i<VBOBOXPREBUILD_PRELOAD_COUNT;++i)
+			vBOBoxPrebuilds[i]=nullptr;
 }
 
 GameDataPreloader::~GameDataPreloader(){
@@ -62,6 +68,10 @@ Chunk* GameDataPreloader::getNewChunkPtr(int coordX, int coordZ){
 	unpauseMainUpdCycle();
 	return toReturn;
 
+}
+
+VBOBox* GameDataPreloader::getNewVBOBoxPtr(int chNumX,int chNumZ,GameMain* gameMain,GLuint textures[TEXTURES_COUNT]){
+	return new VBOBox(chNumX,chNumZ,gameMain,textures);
 }
 
 void GameDataPreloader::pauseMainUpdCycle(){
@@ -110,6 +120,7 @@ void GameDataPreloader::mainUpdCycle(){
 			if(oldMainChX != mainChX || oldMainChZ != mainChZ){
 				//если координаты главного чанка изменились
 
+				//MAIN CHUNKS
 				//update back side chunks
 				const int mainBackChX=mainChX-CHUNKS_PRELOAD_BORDER*BLOCK_COUNT*CUBE_SIZE;
 				const int mainBackChZ=mainChZ-CHUNKS_PRELOAD_BORDER*BLOCK_COUNT*CUBE_SIZE;
@@ -181,6 +192,69 @@ void GameDataPreloader::mainUpdCycle(){
 						chunksPreload[i][j]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
 					}
 				}//finished right side updating
+				//~~END MAIN CHUNKS
+
+				//SUB CHUNKS
+				//update back side sub chunks
+				const int mainBackSubChX=mainChX;
+				const int mainBackSubChZ=mainChZ;
+				for(int i=0; i<CHUNKS_PRELOAD_SUB_LONG_SIDE; ++i){
+						if(mainUpdCycleRedFlag)
+							goto emergencyExit;//экстренный выход, если приказано остановить поток
+
+						//find current coordinates
+						int currChX=mainBackSubChX+i*BLOCK_COUNT*CUBE_SIZE;
+						int currChZ=mainBackSubChZ;
+						if(chunksSubPreload[i] != nullptr)//если там что-то было
+							delete chunksSubPreload[i];
+						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+				}//finished back side sub updating
+
+				//update left sub side chunks
+				const int mainLeftSubChX=mainChX+(CHUNKS_COUNT-1)*BLOCK_COUNT*CUBE_SIZE;
+				const int mainLeftSubChZ=mainChZ+BLOCK_COUNT*CUBE_SIZE;
+				for(int i=CHUNKS_PRELOAD_SUB_LONG_SIDE, iChInd=0; i<CHUNKS_PRELOAD_SUB_LONG_SIDE+CHUNKS_PRELOAD_SUB_SHORT_SIDE; ++i,++iChInd){
+						if(mainUpdCycleRedFlag)
+							goto emergencyExit;//экстренный выход, если приказано остановить поток
+
+						//find current coordinates
+						int currChX=mainLeftSubChX;
+						int currChZ=mainLeftSubChZ+iChInd*BLOCK_COUNT*CUBE_SIZE;
+						if(chunksSubPreload[i] != nullptr)//если там что-то было
+							delete chunksSubPreload[i];
+						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+				}//finished left sub side updating
+
+				//update front sub side chunks
+				const int mainFrontSubChX=mainChX;
+				const int mainFrontSubChZ=mainChZ+(CHUNKS_COUNT-1)*BLOCK_COUNT*CUBE_SIZE;
+				for(int i=CHUNKS_PRELOAD_SUB_LONG_SIDE+CHUNKS_PRELOAD_SUB_SHORT_SIDE,iChInd=0; i<CHUNKS_PRELOAD_SUB_LONG_SIDE*2+CHUNKS_PRELOAD_SUB_SHORT_SIDE; ++i,++iChInd){
+						if(mainUpdCycleRedFlag)
+							goto emergencyExit;//экстренный выход, если приказано остановить поток
+
+						//find current coordinates
+						int currChX=mainFrontSubChX+iChInd*BLOCK_COUNT*CUBE_SIZE;
+						int currChZ=mainFrontSubChZ;
+						if(chunksSubPreload[i] != nullptr)//если там что-то было
+							delete chunksSubPreload[i];
+						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+				}//finished front sub side updating
+
+				//update right sub side chunks
+				const int mainRightSubChX=mainChX;
+				const int mainRightSubChZ=mainChZ+BLOCK_COUNT*CUBE_SIZE;
+				for(int i=CHUNKS_PRELOAD_SUB_LONG_SIDE*2+CHUNKS_PRELOAD_SUB_SHORT_SIDE, iChInd=0; i<CHUNKS_PRELOAD_SUB_ENTIRE_LENGTH; ++i,++iChInd){
+						if(mainUpdCycleRedFlag)
+							goto emergencyExit;//экстренный выход, если приказано остановить поток
+
+						//find current coordinates
+						int currChX=mainRightSubChX;
+						int currChZ=mainRightSubChZ+iChInd*BLOCK_COUNT*CUBE_SIZE;
+						if(chunksSubPreload[i] != nullptr)//если там что-то было
+							delete chunksSubPreload[i];
+						chunksSubPreload[i]=new Chunk(world,worldLayerHolder,currChX,currChZ,getNewChunkId());
+				}//finished right sub side updating
+				//~~END SUB CHUNKS
 			}
 			emergencyExit:;
 		}
