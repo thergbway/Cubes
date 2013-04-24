@@ -11,12 +11,12 @@ const QString TEXTURE_SAND_NAME="sand.bmp";
 const QString LOADING_SPLASH_SCREEN_NAME="loading_splash_screen.png";
 const int MAX_STRING_LEN_FOR_ARRAYS=200;//def.200. Задает размер массива для названия пути текстуры. Нужно для нек. преобразований
 //world numbers
-const int CHUNKS_COUNT=41; //def 65(31) КОЛ-ВО ЧАНКОВ ПО ОДНОЙ СТОРОНЕ, ТЕ ВСЕГО ИХ CHUNK_COUNT*CHUNK_COUNT
-const int CHUNKS_PRELOAD_COUNT=2;//def 5 КОЛ-ВО ПРЕДЗАГРУЖАЕМЫХ ЧАНКОВ ПО ОДНОЙ СТОРОНЕ
+const int CHUNKS_COUNT=41; //def 41 КОЛ-ВО ЧАНКОВ ПО ОДНОЙ СТОРОНЕ, ТЕ ВСЕГО ИХ CHUNK_COUNT*CHUNK_COUNT
+const int CHUNKS_PRELOAD_COUNT=2;//def 2 КОЛ-ВО ПРЕДЗАГРУЖАЕМЫХ ЧАНКОВ ПО ОДНОЙ СТОРОНЕ
 const int BLOCK_CHAINED_COUNT=4097;//def 4097 ФОРМУЛА 2*2^X+1 КОЛИЧЕСТВО СЦЕПЛЕННЫХ(БЕЗ ШВОВ) БЛОКОВ
 							//РАЗМЕР ДБ БОЛЬШЕ РАЗМЕРА ОДНОГО ЧАНКА
-const int BLOCK_COUNT=17;//def 17(15) КОЛ-ВО ЧАНКОВ ПО ОДНОЙ СТОРОНЕ, ТЕ ВСЕГО ИХ BLOCK_COUNT*BLOCK_COUNT*BLOCK_HEIGHT_COUNT
-const int BLOCK_HEIGHT_COUNT=128;//def 128(256)
+const int BLOCK_COUNT=17;//def 17 КОЛ-ВО ЧАНКОВ ПО ОДНОЙ СТОРОНЕ, ТЕ ВСЕГО ИХ BLOCK_COUNT*BLOCK_COUNT*BLOCK_HEIGHT_COUNT
+const int BLOCK_HEIGHT_COUNT=128;//def 128
 const int CUBE_SIZE=256;//def 256
 //blocks
 const int AIR=1;//def 1
@@ -25,11 +25,23 @@ const int GRASS=3;//def 3
 const int STONE=4;//def 4
 const int SAND=5;//def 5
 //graphics
-const int MIN_WIDTH=400;//def 600
-const int MIN_HEIGHT=400;//def 600
-const int CHUNKS_TO_DRAW=33;//def 51(13) КОЛ_ВО ЧАНКОВ ДЛЯ ПРОРИСОВКИ. СЧИТАТЬ КАК 2*Х+1. ДБ НЕ БОЛЬШЕ CHUNKS_COUNT!!!
-const double PARAMETER_LEN=1.0;//def 100.0 ПАРАМЕТР ДЛЯ ВЫЧИСЛЕНИЯ ТОЧКИ, КУДА СМОТРИТ ИГРОК
-const int SIZE_OF_VBOPREBUILDS_ARRAYS=200000000;//def 10000000. Макс кол-во точек которое может хранить класс под вершины, а также под текстуры
+const int VBOBOX_TO_BUILD_IN_ONE_FRAME=10;//def 1. VBOBox, которое будет строится за 1 кадр
+const int MIN_WIDTH=400;//def 400
+const int MIN_HEIGHT=400;//def 400
+const int CHUNKS_TO_DRAW=33;//def 33 КОЛ_ВО ЧАНКОВ ДЛЯ ПРОРИСОВКИ. СЧИТАТЬ КАК 2*Х+1. ДБ НЕ БОЛЬШЕ CHUNKS_COUNT!!!
+const double PARAMETER_LEN=1.0;//def 1.0 ПАРАМЕТР ДЛЯ ВЫЧИСЛЕНИЯ ТОЧКИ, КУДА СМОТРИТ ИГРОК
+const int SIZE_OF_VERTICES_FINAL_ARRAYS=100000;//def 100000. Макс кол-во точек которое может хранить класс под вершины
+const int SIZE_OF_TEXTURES_FINAL_ARRAYS=70000;//def 70000. Макс кол-во точек которое может хранить класс под текстуры
+const int SIZE_OF_VERTICES_DIRT_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии земли
+const int SIZE_OF_TEXTURES_DIRT_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии земли
+const int SIZE_OF_VERTICES_GRASS_TOP_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии верха травы
+const int SIZE_OF_TEXTURES_GRASS_TOP_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии верха травы
+const int SIZE_OF_VERTICES_GRASS_SIDE_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии стороны травы
+const int SIZE_OF_TEXTURES_GRASS_SIDE_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии стороны травы
+const int SIZE_OF_VERTICES_STONE_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии камня
+const int SIZE_OF_TEXTURES_STONE_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии камня
+const int SIZE_OF_VERTICES_SAND_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии песка
+const int SIZE_OF_TEXTURES_SAND_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии песка
 //graphics-textures
 const int TEXTURES_COUNT=50;//def. 50 МАКСИМАЛЬНОЕ ЧИСЛО ТЕКСТУР
 const int DIRT_TEX_INDEX=0;//def. 0 ИНДЕКС ТЕКСТУРЫ ЗЕМЛИ В МАССИВЕ ТЕКСТУР. ДБ МЕНЬШЕ TEXTURES_COUNT И НЕ СОВПАДАТЬ С ДРУГИМИ ИНДЕКСАМИ

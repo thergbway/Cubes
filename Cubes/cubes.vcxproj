@@ -43,6 +43,8 @@
     <ClCompile Include="main.h" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="VBOBox.cpp" />
+    <ClCompile Include="VBOBoxPrebuild.cpp" />
+    <ClCompile Include="VBOBoxTransferInfo.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="world.cpp" />
     <ClCompile Include="worldlayerholder.cpp" />
@@ -56,6 +58,8 @@
     <ClInclude Include="gameDataPreloader.h" />
     <ClInclude Include="simpleArray.h" />
     <ClInclude Include="VBOBox.h" />
+    <ClInclude Include="VBOBoxPrebuild.h" />
+    <ClInclude Include="VBOBoxTransferInfo.h" />
     <ClInclude Include="worldlayerholder.h" />
     <CustomBuild Include="gameMain.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

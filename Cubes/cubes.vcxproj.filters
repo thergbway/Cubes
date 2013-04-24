@@ -70,6 +70,12 @@
     <ClCompile Include="VBOBox.cpp">
       <Filter>.cpp</Filter>
     </ClCompile>
+    <ClCompile Include="VBOBoxPrebuild.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="VBOBoxTransferInfo.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Generated Files">
@@ -148,6 +154,12 @@
       <Filter>.h</Filter>
     </ClInclude>
     <ClInclude Include="simpleArray.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="VBOBoxPrebuild.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="VBOBoxTransferInfo.h">
       <Filter>.h</Filter>
     </ClInclude>
   </ItemGroup>

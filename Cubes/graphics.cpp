@@ -88,15 +88,20 @@ void Graphics::paintGL(){
 	VBOBoxMap.clear();
 
 	//создаем новые VBOBox
-	for(int i=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; i<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++i){
+	for(int i=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2, currLoads=0; i<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++i){
 		for(int j=(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2; j<(CHUNKS_COUNT-1)/2-(CHUNKS_TO_DRAW-1)/2+CHUNKS_TO_DRAW; ++j){
 			int currId=gameMain->world->getChunkId(i,j);
 			if(newVBOBoxMap.count(currId) == 0){
+
 				newVBOBoxMap[currId]= gameDataPreloader->getNewVBOBoxPtr(i,j,gameMain,textures);
 				gameMain->world->setVBOForChunkCreated(i,j);
+				++currLoads;
+				if(currLoads >= VBOBOX_TO_BUILD_IN_ONE_FRAME)
+					goto leaveLoadingCycle;//прекратить постройку графических объектов
 			}
 		}
 	}
+	leaveLoadingCycle:
 	//заполняем старую карту новой
 	VBOBoxMap=newVBOBoxMap;
 

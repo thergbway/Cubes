@@ -8,7 +8,7 @@ Settings::Settings(GameMain* gameMainPtr)
 	spawnPointX=0*CUBE_SIZE;
 	spawnPointY=90*CUBE_SIZE;
 	spawnPointZ=0*CUBE_SIZE;
-	maxWalkSpeed=30*CUBE_SIZE;
+	maxWalkSpeed=70*CUBE_SIZE;
 	sensitivity=0.1;
 	mouseReleased=false;
 	flyingModOn=true;

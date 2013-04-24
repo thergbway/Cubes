@@ -1,23 +1,32 @@
 #pragma once
 #include <QDebug>
 
-template <typename type, const int size>
+template<class T, int size>
+class SimpleArray;
+
+template <class T, int size>
 class SimpleArray{
 private:
-	type array[size];
+	T array[size];
 	int elementsUsed;
 public:
 	SimpleArray(){
 		elementsUsed=0;
 	};
-	void push_back(type t){
+	T& operator[](int index) {
+		if(index >= size){
+			qDebug()<<"SimpleArray. Requested"<<index<<"of"<<size-1;
+		}
+		return array[index];
+	};
+	void push_back(T t){
 		if(elementsUsed >= size){
 			while(true)
 				qDebug()<<"Critical error: SimpleArray is overloaded. See simpleArray.h. elementsUsed="<<elementsUsed<<"maxSize="<<size;
 		}
 		array[elementsUsed]=t;
 		++elementsUsed;
-	}
-	int getElementsCount(return elementsUsed);
-	type& opertor [] (int index){return array[index]};
+	};
+	int getElementsCount(){return elementsUsed;};
+	void goToStart(){elementsUsed=0;};
 };

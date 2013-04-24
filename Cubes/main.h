@@ -8,6 +8,7 @@
 #include "defines.h"
 
 #pragma comment(linker, "/stack:200000000")//необходимо увеличить стек
+//#pragma comment(linker, "/stack:300000000")//необходимо увеличить стек
 
 int main(int argc,char* argv[])
 {
@@ -23,7 +24,6 @@ int main(int argc,char* argv[])
 	splashScreenAdress.append(LOADING_SPLASH_SCREEN_NAME);
 	splashScreen->setPixmap(QPixmap(splashScreenAdress));
 	splashScreen->show();
-	//Sleep(10000);
 
 	QMainWindow* mainWindow= new QMainWindow;
 	GameMain* gameMain= new GameMain(mainWindow);
