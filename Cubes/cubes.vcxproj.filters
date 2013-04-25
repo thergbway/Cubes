@@ -76,6 +76,9 @@
     <ClCompile Include="VBOBoxTransferInfo.cpp">
       <Filter>.cpp</Filter>
     </ClCompile>
+    <ClCompile Include="dayNightCycleManager.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Generated Files">
@@ -160,6 +163,9 @@
       <Filter>.h</Filter>
     </ClInclude>
     <ClInclude Include="VBOBoxTransferInfo.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="dayNightCycleManager.h">
       <Filter>.h</Filter>
     </ClInclude>
   </ItemGroup>

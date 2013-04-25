@@ -48,6 +48,10 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	pointsOfGrassSideToDraw=	vBOBoxTransferInfo.pointsOfGrassSideToDraw;
 	pointsOfStoneToDraw=		vBOBoxTransferInfo.pointsOfStoneToDraw;
 	pointsOfSandToDraw=			vBOBoxTransferInfo.pointsOfSandToDraw;
+	pointsOfWaterToDraw=		vBOBoxTransferInfo.pointsOfWaterToDraw;
+	pointsOfLeafsToDraw=		vBOBoxTransferInfo.pointsOfLeafsToDraw;
+	pointsOfWoodToDraw=			vBOBoxTransferInfo.pointsOfWoodToDraw;
+	pointsOfSnowToDraw=			vBOBoxTransferInfo.pointsOfSnowToDraw;
 
 	//зададим смещение
 	offsetOfDirt=				vBOBoxTransferInfo.offsetOfDirt;
@@ -55,6 +59,10 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	offsetOfGrassSide=			vBOBoxTransferInfo.offsetOfGrassSide;
 	offsetOfStone=				vBOBoxTransferInfo.offsetOfStone;
 	offsetOfSand=				vBOBoxTransferInfo.offsetOfSand;
+	offsetOfWater=				vBOBoxTransferInfo.offsetOfWater;
+	offsetOfLeafs=				vBOBoxTransferInfo.offsetOfLeafs;
+	offsetOfWood=				vBOBoxTransferInfo.offsetOfWood;
+	offsetOfSnow=				vBOBoxTransferInfo.offsetOfSnow;
 
 	VBO=QGLBuffer(QGLBuffer::VertexBuffer);
 	VBO.setUsagePattern( QGLBuffer::StaticDraw );
@@ -100,6 +108,22 @@ void VBOBox::draw(){
 	//binding and drawing SAND
 	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+SAND_TEX_INDEX));
 	glDrawArrays(GL_QUADS, offsetOfSand, pointsOfSandToDraw);
+
+	//binding and drawing WATER
+	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+WATER_TEX_INDEX));
+	glDrawArrays(GL_QUADS, offsetOfWater, pointsOfWaterToDraw);
+
+	//binding and drawing LEAFS
+	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+LEAFS_TEX_INDEX));
+	glDrawArrays(GL_QUADS, offsetOfLeafs, pointsOfLeafsToDraw);
+
+	//binding and drawing WOOD
+	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+WOOD_TEX_INDEX));
+	glDrawArrays(GL_QUADS, offsetOfWood, pointsOfWoodToDraw);
+
+	//binding and drawing SNOW
+	glBindTexture(GL_TEXTURE_2D, *(texturesPtr+SNOW_TEX_INDEX));
+	glDrawArrays(GL_QUADS, offsetOfSnow, pointsOfSnowToDraw);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

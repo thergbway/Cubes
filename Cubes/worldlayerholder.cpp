@@ -31,10 +31,18 @@ void WorldLayerHolder::updateLayerTransferForChunk(int coorChX,int coorChZ,Layer
 					&& j1>=0 && j1<BLOCK_CHAINED_COUNT){
 					outputLayerTransfer.stoneLayer[i0][j0]=stoneLayer[i1][j1];
 					outputLayerTransfer.dirtLayer[i0][j0]=dirtLayer[i1][j1];
+					outputLayerTransfer.waterLayer[i0][j0]=waterLayer[i1][j1];
+					outputLayerTransfer.sandLayer[i0][j0]=sandLayer[i1][j1];
+					outputLayerTransfer.snowLayer[i0][j0]=snowLayer[i1][j1];
+					outputLayerTransfer.woodLayer[i0][j0]=woodLayer[i1][j1];
 				}
 				else{
-					outputLayerTransfer.stoneLayer[i0][j0]=8;
-					outputLayerTransfer.dirtLayer[i0][j0]=8;
+					outputLayerTransfer.stoneLayer[i0][j0]=1;
+					outputLayerTransfer.dirtLayer[i0][j0]=1;
+					outputLayerTransfer.waterLayer[i0][j0]=0;
+					outputLayerTransfer.sandLayer[i0][j0]=0;
+					outputLayerTransfer.snowLayer[i0][j0]=0;
+					outputLayerTransfer.woodLayer[i0][j0]=0;
 				}
 			}
 		}
@@ -43,12 +51,20 @@ void WorldLayerHolder::updateLayerTransferForChunk(int coorChX,int coorChZ,Layer
 		for(int i=0; i<BLOCK_COUNT; ++i){
 			for(int j=0; j<BLOCK_COUNT; ++j){
 				if(i%2 == 0 && j%2 ==0){
-					outputLayerTransfer.stoneLayer[i][j]=5;
-					outputLayerTransfer.dirtLayer[i][j]=5;
+					outputLayerTransfer.stoneLayer[i][j]=1;
+					outputLayerTransfer.dirtLayer[i][j]=1;
+					outputLayerTransfer.waterLayer[i][j]=0;
+					outputLayerTransfer.sandLayer[i][j]=0;
+					outputLayerTransfer.snowLayer[i][j]=0;
+					outputLayerTransfer.woodLayer[i][j]=0;
 				}
 				else{
-					outputLayerTransfer.stoneLayer[i][j]=10;
-					outputLayerTransfer.dirtLayer[i][j]=10;
+					outputLayerTransfer.stoneLayer[i][j]=1;
+					outputLayerTransfer.dirtLayer[i][j]=1;
+					outputLayerTransfer.waterLayer[i][j]=0;
+					outputLayerTransfer.sandLayer[i][j]=0;
+					outputLayerTransfer.snowLayer[i][j]=0;
+					outputLayerTransfer.woodLayer[i][j]=0;
 				}
 			}
 		}
@@ -64,7 +80,7 @@ int WorldLayerHolder::random(int min,int max,int seed,int x,int z){
 	int ym105943       =554;  
 
 	//for (int i = 0; i < 15; i++) {
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 1; i++) {
 		xm7          = x % 7;
 		xm13        = x % 13;
 		xm1301081 = x % 1301081;
@@ -100,15 +116,12 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 	for(int i=0; i<BLOCK_CHAINED_COUNT; ++i)
 		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j)
 			stoneTmpLayer[i][j]=-500;
+
 	//угловые значения
-	//stoneTmpLayer[0][0]=random(STONE_MIN,STONE_MAX,seed,coordX,coordZ);
-	//stoneTmpLayer[0][BLOCK_CHAINED_COUNT-1]=random(STONE_MIN,STONE_MAX,seed,coordX,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
-	//stoneTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=random(STONE_MIN,STONE_MAX,seed,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
-	//stoneTmpLayer[BLOCK_CHAINED_COUNT-1][0]=random(STONE_MIN,STONE_MAX,seed,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ);
-	stoneTmpLayer[0][0]=10;
-	stoneTmpLayer[0][BLOCK_CHAINED_COUNT-1]=50;
-	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=10;
-	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][0]=40;
+	stoneTmpLayer[0][0]=random(STONE_MIN,STONE_MAX,seed,coordX,coordZ);
+	stoneTmpLayer[0][BLOCK_CHAINED_COUNT-1]=random(STONE_MIN,STONE_MAX,seed,coordX,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
+	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=random(STONE_MIN,STONE_MAX,seed,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
+	stoneTmpLayer[BLOCK_CHAINED_COUNT-1][0]=random(STONE_MIN,STONE_MAX,seed,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ);
 
 	//теперь заполним предварительный слой
 	int base=BLOCK_CHAINED_COUNT-1;//= square or diamond size -1 for the current iteration
@@ -149,6 +162,7 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 		base/=2;
 	}
 	//сглаживание 3 на 3 с изменением середины только
+
 	qDebug()<<"Smoothing stones 1";
 	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
 		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
@@ -197,26 +211,24 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 				stoneLayer[i][j]=((byte)stoneTmpLayer[i][j])+1;
 			else
 				stoneLayer[i][j]=(byte)stoneTmpLayer[i][j];
+
 		}
 	}
 
 	//обрабатываем высоту земли
 	//создадим предварительный слой для земли
 	float dirtTmpLayer[BLOCK_CHAINED_COUNT][BLOCK_CHAINED_COUNT];
+
 	//заполним слой недействительными блоками для отличия
 	for(int i=0; i<BLOCK_CHAINED_COUNT; ++i)
 		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j)
 			dirtTmpLayer[i][j]=-500;
+
 	//угловые значения
-	//dirtTmpLayer[0][0]=random(DIRT_MIN,DIRT_MAX,seed*2,coordX,coordZ);
-	//dirtTmpLayer[0][BLOCK_CHAINED_COUNT-1]=random(DIRT_MIN,DIRT_MAX,seed*2,coordX,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
-	//dirtTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=random(DIRT_MIN,DIRT_MAX,seed*2,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
-	//dirtTmpLayer[BLOCK_CHAINED_COUNT-1][0]=random(STONE_MIN,STONE_MAX,seed*2,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ);
-	
-	dirtTmpLayer[0][0]=10;
-	dirtTmpLayer[0][BLOCK_CHAINED_COUNT-1]=14;
-	dirtTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=22;
-	dirtTmpLayer[BLOCK_CHAINED_COUNT-1][0]=5;
+	dirtTmpLayer[0][0]=random(DIRT_MIN,DIRT_MAX,seed*2,coordX,coordZ);
+	dirtTmpLayer[0][BLOCK_CHAINED_COUNT-1]=random(DIRT_MIN,DIRT_MAX,seed*2,coordX,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
+	dirtTmpLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]=random(DIRT_MIN,DIRT_MAX,seed*2,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ+BLOCK_CHAINED_COUNT*CUBE_SIZE);
+	dirtTmpLayer[BLOCK_CHAINED_COUNT-1][0]=random(STONE_MIN,STONE_MAX,seed*2,coordX+BLOCK_CHAINED_COUNT*CUBE_SIZE,coordZ);
 
 	//теперь заполним предварительный слой
 	base=BLOCK_CHAINED_COUNT-1;//= square or diamond size -1 for the current iteration
@@ -257,6 +269,7 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 		base/=2;
 	}
 	//сглаживание 3 на 3 с изменением середины только
+
 	qDebug()<<"Smoothing dirt 1";
 	for(int i=1; i<BLOCK_CHAINED_COUNT-1; ++i)
 		for(int j=1; j<BLOCK_CHAINED_COUNT-1; ++j){
@@ -307,6 +320,84 @@ void WorldLayerHolder::reloadLayers(int coordMainX, int coordMainZ){
 				dirtLayer[i][j]=(byte)dirtTmpLayer[i][j];
 		}
 	}
+
+	//переведем слой земли в обычную высоту, те если слой высотой 28, то в массиве будут значения от 1 до 28
+	for(int i=0; i < BLOCK_CHAINED_COUNT; ++i){
+		for(int j=0; j < BLOCK_CHAINED_COUNT; ++j){
+			dirtLayer[i][j]-=stoneLayer[i][j];
+		}
+	}
+
+	//создадим слой воды и песка
+	for(int i=0; i < BLOCK_CHAINED_COUNT; ++i){
+		for(int j=0; j < BLOCK_CHAINED_COUNT; ++j){
+			if(dirtLayer[i][j] + stoneLayer[i][j] >= WATER_LEVEL){
+				waterLayer[i][j]=0;
+				sandLayer[i][j]=0;
+			}
+			else{//air->water
+				//какой высоты столб воды
+				int height = WATER_LEVEL - (dirtLayer[i][j] + stoneLayer[i][j])-SAND_STEAK;
+				//write the height
+				if(height >= 0){
+					waterLayer[i][j]=height;
+					sandLayer[i][j]=SAND_STEAK;
+				}
+				else{
+					waterLayer[i][j]=0;
+					sandLayer[i][j]=height+SAND_STEAK;
+				}
+			}
+		}
+	}
+
+	//создадим слой снега
+	for(int i=0; i<BLOCK_CHAINED_COUNT; ++i){
+		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j){
+			if(dirtLayer[i][j] + stoneLayer[i][j] < SNOW_LEVEL)
+				snowLayer[i][j]=0;
+			else{
+				int height=dirtLayer[i][j] + stoneLayer[i][j]-(SNOW_LEVEL-1);
+				snowLayer[i][j]=height;
+				dirtLayer[i][j]-=height;
+				if(dirtLayer[i][j] < 0)
+					dirtLayer[i][j] = 0;
+			}
+		}
+	}
+
+	//добавим стволы деревьев
+	for(int i=0 ; i<BLOCK_CHAINED_COUNT; ++i)
+		for(int j=0; j<BLOCK_CHAINED_COUNT; ++j)
+			woodLayer[i][j]=0;//обнулим
+	const int treeStep=TREE_MAX_WIDTH+2*TREE_OFFSET;//стандартный шаг дерева
+	for(int i=treeStep; i < BLOCK_CHAINED_COUNT-treeStep; i+=treeStep){
+		for(int j=treeStep; j < BLOCK_CHAINED_COUNT-treeStep; j+=treeStep){
+			//можно ли ставить дерево?
+			const int currHeight=dirtLayer[i][j] + stoneLayer[i][j] + waterLayer[i][j] + sandLayer[i][j] + snowLayer[i][j];
+			if(dirtLayer[i][j] == 0 ||
+				currHeight < TREE_MIN_HEIGHT ||
+				currHeight > TREE_MAX_HEIGHT)
+				continue;
+			//имеем точку куда можно ставить дерево
+			//проверим по вероятности
+			bool treeCanBePlaced=chance(TREE_FREQUENCY,100,seed*15,i*225*j,j*9120);
+			if(!treeCanBePlaced)
+				continue;
+			//дерево разрешено ставить
+			//вычислим смещение
+			int offsetI=random(-1,1,seed/2,i*i*i*i,j*j*j*j*j);
+			int offsetJ=random(-1,1,seed/3,i*i*i*i,j*j*j*j*j);
+			int indXToPlace=i+offsetI;
+			int indZToPlace=j+offsetJ;
+
+			//разместим дерево
+			//рассчитаем высоту
+			const int currTreeHeight=random(TREE_HEIGHT_MIN,TREE_HEIGHT_MAX,seed/2*22,i*i*i,j*j*j*j/33);
+			woodLayer[indXToPlace][indZToPlace]=currTreeHeight;
+		}
+	}
+
 
 	qDebug()<<"Finished reloading layers";
 	qDebug()<<"Stone corners:"<<(byte)stoneLayer[0][0]<<(byte)stoneLayer[0][BLOCK_CHAINED_COUNT-1]<<(byte)stoneLayer[BLOCK_CHAINED_COUNT-1][BLOCK_CHAINED_COUNT-1]<<(byte)stoneLayer[BLOCK_CHAINED_COUNT-1][0];

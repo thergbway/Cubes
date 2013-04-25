@@ -8,6 +8,10 @@ const QString TEXTURE_GRASS_TOP_NAME="grass_top.bmp";
 const QString TEXTURE_GRASS_SIDE_NAME="grass_side.bmp";
 const QString TEXTURE_STONE_NAME="stone.bmp";
 const QString TEXTURE_SAND_NAME="sand.bmp";
+const QString TEXTURE_WATER_NAME="water.bmp";
+const QString TEXTURE_LEAFS_NAME="leafs.bmp";
+const QString TEXTURE_WOOD_NAME="wood.bmp";
+const QString TEXTURE_SNOW_NAME="snow.bmp";
 const QString LOADING_SPLASH_SCREEN_NAME="loading_splash_screen.png";
 const int MAX_STRING_LEN_FOR_ARRAYS=200;//def.200. Задает размер массива для названия пути текстуры. Нужно для нек. преобразований
 //world numbers
@@ -24,6 +28,12 @@ const int DIRT=2;//def 2
 const int GRASS=3;//def 3
 const int STONE=4;//def 4
 const int SAND=5;//def 5
+const int WATER=6;//def 6
+const int LEAFS=7;//def 7
+const int WOOD=8;//def 8
+const int SNOW=9;//def 9
+//day night values
+const int DAY_NIGHT_CYCLE_TIME=120000;//def 120000. Время цикла день-ночь. В мс.
 //graphics
 const int VBOBOX_TO_BUILD_IN_ONE_FRAME=10;//def 1. VBOBox, которое будет строится за 1 кадр
 const int MIN_WIDTH=400;//def 400
@@ -42,6 +52,14 @@ const int SIZE_OF_VERTICES_STONE_ARRAYS=100000;//def 100000 Макс кол-во точек-ве
 const int SIZE_OF_TEXTURES_STONE_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии камня
 const int SIZE_OF_VERTICES_SAND_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии песка
 const int SIZE_OF_TEXTURES_SAND_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии песка
+const int SIZE_OF_VERTICES_WATER_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии песка
+const int SIZE_OF_TEXTURES_WATER_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии песка
+const int SIZE_OF_VERTICES_LEAFS_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии листьев
+const int SIZE_OF_TEXTURES_LEAFS_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии листьев
+const int SIZE_OF_VERTICES_WOOD_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии дерева
+const int SIZE_OF_TEXTURES_WOOD_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии дерева
+const int SIZE_OF_VERTICES_SNOW_ARRAYS=100000;//def 100000 Макс кол-во точек-вершин для геометрии снега
+const int SIZE_OF_TEXTURES_SNOW_ARRAYS=70000;//def 70000 Макс кол-во точек-текстурных коорд. для геометрии снега
 //graphics-textures
 const int TEXTURES_COUNT=50;//def. 50 МАКСИМАЛЬНОЕ ЧИСЛО ТЕКСТУР
 const int DIRT_TEX_INDEX=0;//def. 0 ИНДЕКС ТЕКСТУРЫ ЗЕМЛИ В МАССИВЕ ТЕКСТУР. ДБ МЕНЬШЕ TEXTURES_COUNT И НЕ СОВПАДАТЬ С ДРУГИМИ ИНДЕКСАМИ
@@ -49,6 +67,10 @@ const int GRASS_TOP_TEX_INDEX=1;//def.1. СМ. ВЫШЕ
 const int GRASS_SIDE_TEX_INDEX=2;//def.2. СМ. ВЫШЕ
 const int STONE_TEX_INDEX=3;//def. 3. СМ. ВЫШЕ
 const int SAND_TEX_INDEX=4;//def. 4. СМ ВЫШЕ
+const int WATER_TEX_INDEX=5;//def. 5. СМ ВЫШЕ
+const int LEAFS_TEX_INDEX=6;//def. 6. СМ ВЫШЕ
+const int WOOD_TEX_INDEX=7;//def. 7. СМ ВЫШЕ
+const int SNOW_TEX_INDEX=8;//def. 8. СМ ВЫШЕ
 //chunks generator
 //types of landscape
 	//КОНСТАНТЫ РАЗЛИЧНЫХ ГЕНЕРАТОРОВ СМ В СООТВЕТСТВУЮЩИХ ФАЙЛАХ

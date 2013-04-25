@@ -142,23 +142,38 @@ void Graphics::loadAllTextures(){
 	QString textureGrassSideAdress=GAME_DIRECTORY;
 	QString textureStoneAdress=GAME_DIRECTORY;
 	QString textureSandAdress=GAME_DIRECTORY;
+	QString textureWaterAdress=GAME_DIRECTORY;
+	QString textureLeafsAdress=GAME_DIRECTORY;
+	QString textureWoodAdress=GAME_DIRECTORY;
+	QString textureSnowAdress=GAME_DIRECTORY;
 	textureDirtAdress.append(TEXTURE_DIRT_NAME);
 	textureGrassTopAdress.append(TEXTURE_GRASS_TOP_NAME);
 	textureGrassSideAdress.append(TEXTURE_GRASS_SIDE_NAME);
 	textureStoneAdress.append(TEXTURE_STONE_NAME);
 	textureSandAdress.append(TEXTURE_SAND_NAME);
+	textureWaterAdress.append(TEXTURE_WATER_NAME);
+	textureLeafsAdress.append(TEXTURE_LEAFS_NAME);
+	textureWoodAdress.append(TEXTURE_WOOD_NAME);
+	textureSnowAdress.append(TEXTURE_SNOW_NAME);
 	//создадим массивы для преобразования
 	wchar_t textureDirtAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	wchar_t textureGrassTopAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	wchar_t textureGrassSideAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	wchar_t textureStoneAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	wchar_t textureSandAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureWaterAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureLeafsAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureWoodAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
+	wchar_t textureSnowAdressFinalArray[MAX_STRING_LEN_FOR_ARRAYS]={0};
 	textureDirtAdress.toWCharArray(textureDirtAdressFinalArray);
 	textureGrassTopAdress.toWCharArray(textureGrassTopAdressFinalArray);
 	textureGrassSideAdress.toWCharArray(textureGrassSideAdressFinalArray);
 	textureStoneAdress.toWCharArray(textureStoneAdressFinalArray);
 	textureSandAdress.toWCharArray(textureSandAdressFinalArray);
-
+	textureWaterAdress.toWCharArray(textureWaterAdressFinalArray);
+	textureLeafsAdress.toWCharArray(textureLeafsAdressFinalArray);
+	textureWoodAdress.toWCharArray(textureWoodAdressFinalArray);
+	textureSnowAdress.toWCharArray(textureSnowAdressFinalArray);
 
 	// Загрузка текстур
 	AUX_RGBImageRec *textureDirt;
@@ -166,11 +181,19 @@ void Graphics::loadAllTextures(){
 	AUX_RGBImageRec *textureGrassSide;
 	AUX_RGBImageRec *textureStone;
 	AUX_RGBImageRec *textureSand;
+	AUX_RGBImageRec *textureWater;
+	AUX_RGBImageRec *textureLeafs;
+	AUX_RGBImageRec *textureWood;
+	AUX_RGBImageRec *textureSnow;
 	textureDirt = auxDIBImageLoad(textureDirtAdressFinalArray);
 	textureGrassTop = auxDIBImageLoad(textureGrassTopAdressFinalArray);
 	textureGrassSide = auxDIBImageLoad(textureGrassSideAdressFinalArray);
 	textureStone = auxDIBImageLoad(textureStoneAdressFinalArray);
 	textureSand = auxDIBImageLoad(textureSandAdressFinalArray);
+	textureWater = auxDIBImageLoad(textureWaterAdressFinalArray);
+	textureLeafs = auxDIBImageLoad(textureLeafsAdressFinalArray);
+	textureWood = auxDIBImageLoad(textureWoodAdressFinalArray);
+	textureSnow = auxDIBImageLoad(textureSnowAdressFinalArray);
 
 	// Выделение индексов текстур
 	glGenTextures(TEXTURES_COUNT, &textures[0]);
@@ -200,4 +223,24 @@ void Graphics::loadAllTextures(){
 	glBindTexture(GL_TEXTURE_2D, textures[SAND_TEX_INDEX]);
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureSand->sizeX, textureSand->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureSand->data);
 	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureSand->sizeX,textureSand->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureSand->data);//создание мипмапа
+
+	//загружаем текстуру WATER
+	glBindTexture(GL_TEXTURE_2D, textures[WATER_TEX_INDEX]);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureWater->sizeX, textureWater->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureWater->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureWater->sizeX,textureWater->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureWater->data);//создание мипмапа
+
+	//загружаем текстуру LEAFS
+	glBindTexture(GL_TEXTURE_2D, textures[LEAFS_TEX_INDEX]);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureLeafs->sizeX, textureLeafs->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureLeafs->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureLeafs->sizeX,textureLeafs->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureLeafs->data);//создание мипмапа
+
+	//загружаем текстуру WOOD
+	glBindTexture(GL_TEXTURE_2D, textures[WOOD_TEX_INDEX]);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureWood->sizeX, textureWood->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureWood->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureWood->sizeX,textureWood->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureWood->data);//создание мипмапа
+
+	//загружаем текстуру SNOW
+	glBindTexture(GL_TEXTURE_2D, textures[SNOW_TEX_INDEX]);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureSnow->sizeX, textureSnow->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureSnow->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureSnow->sizeX,textureSnow->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureSnow->data);//создание мипмапа
 }

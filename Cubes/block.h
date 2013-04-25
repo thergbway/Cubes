@@ -19,6 +19,10 @@ public:
 	void setGrass();
 	void setStone();
 	void setSand();
+	void setWater();
+	void setLeafs();
+	void setWood();
+	void setSnow();
 	char getType();
 	bool isTransparent();
 };

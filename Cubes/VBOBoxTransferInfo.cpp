@@ -7,12 +7,20 @@ VBOBoxTransferInfo& VBOBoxTransferInfo::operator=(const VBOBoxTransferInfo& v){
 		pointsOfGrassSideToDraw=	v.pointsOfGrassSideToDraw;
 		pointsOfStoneToDraw=		v.pointsOfStoneToDraw;
 		pointsOfSandToDraw=			v.pointsOfSandToDraw;
+		pointsOfWaterToDraw=		v.pointsOfWaterToDraw;
+		pointsOfLeafsToDraw=		v.pointsOfLeafsToDraw;
+		pointsOfWoodToDraw=			v.pointsOfWoodToDraw;
+		pointsOfSnowToDraw=		v.pointsOfSnowToDraw;
 
 		offsetOfDirt=				v.offsetOfDirt;
 		offsetOfGrassTop=			v.offsetOfGrassTop;
 		offsetOfGrassSide=			v.offsetOfGrassSide;
 		offsetOfStone=				v.offsetOfStone;
 		offsetOfSand=				v.offsetOfSand;
+		offsetOfWater=				v.offsetOfWater;
+		offsetOfLeafs=				v.offsetOfLeafs;
+		offsetOfWood=				v.offsetOfWood;
+		offsetOfSnow=				v.offsetOfSnow;
 	}
 	
 	return *this;
@@ -42,12 +50,21 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		int pointsOfGrassSideToDraw=0;
 		int pointsOfStoneToDraw=0;
 		int pointsOfSandToDraw=0;
+		int pointsOfWaterToDraw=0;
+		int pointsOfLeafsToDraw=0;
+		int pointsOfWoodToDraw=0;
+		int pointsOfSnowToDraw=0;
+
 
 		int offsetOfDirt=0;
 		int offsetOfGrassTop=0;
 		int offsetOfGrassSide=0;
 		int offsetOfStone=0;
 		int offsetOfSand=0;
+		int offsetOfWater=0;
+		int offsetOfLeafs=0;
+		int offsetOfWood=0;
+		int offsetOfSnow=0;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_DIRT_ARRAYS> verticesDirt;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_DIRT_ARRAYS> texturesDirt;
@@ -63,6 +80,18 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_SAND_ARRAYS> verticesSand;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_SAND_ARRAYS> texturesSand;
+
+		SimpleArray<GLint,SIZE_OF_VERTICES_WATER_ARRAYS> verticesWater;
+		SimpleArray<GLfloat,SIZE_OF_TEXTURES_WATER_ARRAYS> texturesWater;
+
+		SimpleArray<GLint,SIZE_OF_VERTICES_LEAFS_ARRAYS> verticesLeafs;
+		SimpleArray<GLfloat,SIZE_OF_TEXTURES_LEAFS_ARRAYS> texturesLeafs;
+
+		SimpleArray<GLint,SIZE_OF_VERTICES_WOOD_ARRAYS> verticesWood;
+		SimpleArray<GLfloat,SIZE_OF_TEXTURES_WOOD_ARRAYS> texturesWood;
+
+		SimpleArray<GLint,SIZE_OF_VERTICES_SNOW_ARRAYS> verticesSnow;
+		SimpleArray<GLfloat,SIZE_OF_TEXTURES_SNOW_ARRAYS> texturesSnow;
 
 		//get chunk`s coordinates
 		int chCoordX=chunkPtr->getCoordX();
@@ -759,6 +788,658 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							texturesSand.push_back(0.0);
 						}
 						break;
+					case WATER:
+						//top
+						if(blocksTransAround.top==true){
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(0.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(0.0);
+						}
+
+						//down
+						if(blocksTransAround.down==true){
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(0.0);
+									
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(0.0);
+						}
+
+						//front
+						if(blocksTransAround.front==true){
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(0.0);
+									
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(0.0);
+						}
+
+						//back
+						if(blocksTransAround.back==true){
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(0.0);
+	
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(1.0);
+		
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(1.0);
+			
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(0.0);
+						}
+
+						//left
+						if(blocksTransAround.left==true){
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(0.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(0.0);
+						}
+
+						//right
+						if(blocksTransAround.right==true){
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(0.0);
+									
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ);
+							texturesWater.push_back(1.0);
+							texturesWater.push_back(1.0);
+							
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY+CUBE_SIZE);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(1.0);
+									
+							verticesWater.push_back(blCoordX+CUBE_SIZE);
+							verticesWater.push_back(blCoordY);
+							verticesWater.push_back(blCoordZ+CUBE_SIZE);
+							texturesWater.push_back(0.0);
+							texturesWater.push_back(0.0);
+						}
+						break;
+					case LEAFS:
+						//top
+						if(blocksTransAround.top==true){
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(0.0);
+							
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(1.0);
+						
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(1.0);
+							
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(0.0);
+						}
+
+						//down
+						if(blocksTransAround.down==true){
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(0.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(0.0);
+						}
+
+						//front
+						if(blocksTransAround.front==true){
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(0.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(0.0);
+						}
+
+						//back
+						if(blocksTransAround.back==true){
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(0.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(0.0);
+						}
+
+						//left
+						if(blocksTransAround.left==true){
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(0.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(0.0);
+						}
+
+						//right
+						if(blocksTransAround.right==true){
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(0.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ);
+							texturesLeafs.push_back(1.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(1.0);
+
+							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
+							verticesLeafs.push_back(blCoordY);
+							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
+							texturesLeafs.push_back(0.0);
+							texturesLeafs.push_back(0.0);
+						}
+						break;
+					case WOOD:
+						//top
+						if(blocksTransAround.top==true){
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(0.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(0.0);
+						}
+
+						//down
+						if(blocksTransAround.down==true){
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(0.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(0.0);
+						}
+
+						//front
+						if(blocksTransAround.front==true){
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(0.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(0.0);
+						}
+
+						//back
+						if(blocksTransAround.back==true){
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(0.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(0.0);
+						}
+
+						//left
+						if(blocksTransAround.left==true){
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(0.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(0.0);
+						}
+
+						//right
+						if(blocksTransAround.right==true){
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(0.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ);
+							texturesWood.push_back(1.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY+CUBE_SIZE);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(1.0);
+
+							verticesWood.push_back(blCoordX+CUBE_SIZE);
+							verticesWood.push_back(blCoordY);
+							verticesWood.push_back(blCoordZ+CUBE_SIZE);
+							texturesWood.push_back(0.0);
+							texturesWood.push_back(0.0);
+						}
+						break;
+					case SNOW:
+						//top
+						if(blocksTransAround.top==true){
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(0.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(0.0);
+						}
+
+						//down
+						if(blocksTransAround.down==true){
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(0.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(0.0);
+						}
+
+						//front
+						if(blocksTransAround.front==true){
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(0.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(0.0);
+						}
+
+						//back
+						if(blocksTransAround.back==true){
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(0.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(0.0);
+						}
+
+						//left
+						if(blocksTransAround.left==true){
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(0.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(0.0);
+						}
+
+						//right
+						if(blocksTransAround.right==true){
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(0.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ);
+							texturesSnow.push_back(1.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY+CUBE_SIZE);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(1.0);
+
+							verticesSnow.push_back(blCoordX+CUBE_SIZE);
+							verticesSnow.push_back(blCoordY);
+							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
+							texturesSnow.push_back(0.0);
+							texturesSnow.push_back(0.0);
+						}
+						break;
 					}
 				}
 			}
@@ -784,6 +1465,18 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		for(int i=0; i < verticesSand.getElementsCount(); ++i)
 			verticesFinal.push_back(verticesSand[i]);
 
+		for(int i=0; i < verticesWater.getElementsCount(); ++i)
+			verticesFinal.push_back(verticesWater[i]);
+
+		for(int i=0; i < verticesLeafs.getElementsCount(); ++i)
+			verticesFinal.push_back(verticesLeafs[i]);
+
+		for(int i=0; i < verticesWood.getElementsCount(); ++i)
+			verticesFinal.push_back(verticesWood[i]);
+
+		for(int i=0; i < verticesSnow.getElementsCount(); ++i)
+			verticesFinal.push_back(verticesSnow[i]);
+
 		//заполним texturesFinal
 
 		for(int i=0; i < texturesDirt.getElementsCount(); ++i)
@@ -801,6 +1494,18 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		for(int i=0; i < texturesSand.getElementsCount(); ++i)
 			texturesFinal.push_back(texturesSand[i]);
 
+		for(int i=0; i < texturesWater.getElementsCount(); ++i)
+			texturesFinal.push_back(texturesWater[i]);
+
+		for(int i=0; i < texturesLeafs.getElementsCount(); ++i)
+			texturesFinal.push_back(texturesLeafs[i]);
+
+		for(int i=0; i < texturesWood.getElementsCount(); ++i)
+			texturesFinal.push_back(texturesWood[i]);
+
+		for(int i=0; i < texturesSnow.getElementsCount(); ++i)
+			texturesFinal.push_back(texturesSnow[i]);
+
 		//сколько каких видов точек надо рисовать
 
 		pointsOfDirtToDraw=verticesDirt.getElementsCount()/3;
@@ -808,6 +1513,10 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		pointsOfGrassSideToDraw=verticesGrassSide.getElementsCount()/3;
 		pointsOfStoneToDraw=verticesStone.getElementsCount()/3;
 		pointsOfSandToDraw=verticesSand.getElementsCount()/3;
+		pointsOfWaterToDraw=verticesWater.getElementsCount()/3;
+		pointsOfLeafsToDraw=verticesLeafs.getElementsCount()/3;
+		pointsOfWoodToDraw=verticesWood.getElementsCount()/3;
+		pointsOfSnowToDraw=verticesSnow.getElementsCount()/3;
 
 		//зададим смещение
 		offsetOfDirt=0;
@@ -815,6 +1524,10 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		offsetOfGrassSide=offsetOfGrassTop+pointsOfGrassTopToDraw;
 		offsetOfStone=offsetOfGrassSide+pointsOfGrassSideToDraw;
 		offsetOfSand=offsetOfStone+pointsOfStoneToDraw;
+		offsetOfWater=offsetOfSand+pointsOfSandToDraw;
+		offsetOfLeafs=offsetOfWater+pointsOfWaterToDraw;
+		offsetOfWood=offsetOfLeafs+pointsOfLeafsToDraw;
+		offsetOfSnow=offsetOfWood+pointsOfWoodToDraw;
 
 		VBOBoxTransferInfo toReturn;
 
@@ -823,12 +1536,20 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		toReturn.pointsOfGrassSideToDraw=pointsOfGrassSideToDraw;
 		toReturn.pointsOfStoneToDraw=pointsOfStoneToDraw;
 		toReturn.pointsOfSandToDraw=pointsOfSandToDraw;
+		toReturn.pointsOfWaterToDraw=pointsOfWaterToDraw;
+		toReturn.pointsOfLeafsToDraw=pointsOfLeafsToDraw;
+		toReturn.pointsOfWoodToDraw=pointsOfWoodToDraw;
+		toReturn.pointsOfSnowToDraw=pointsOfSnowToDraw;
 
 		toReturn.offsetOfDirt=offsetOfDirt;
 		toReturn.offsetOfGrassTop=offsetOfGrassTop;
 		toReturn.offsetOfGrassSide=offsetOfGrassSide;
 		toReturn.offsetOfStone=offsetOfStone;
 		toReturn.offsetOfSand=offsetOfSand;
+		toReturn.offsetOfWater=offsetOfWater;
+		toReturn.offsetOfLeafs=offsetOfLeafs;
+		toReturn.offsetOfWood=offsetOfWood;
+		toReturn.offsetOfSnow=offsetOfSnow;
 
 		return toReturn;
 }

@@ -177,7 +177,73 @@ Chunk::Chunk(World* worldPtr,WorldLayerHolder* worldLayerHolder,int _coordX, int
 					if(i+1 != layerTransfer.dirtLayer[x][z])
 						blocks[x][y][z].setDirt();
 					else
-						blocks[x][y][z].setGrass();
+						if(i >= layerTransfer.sandLayer[x][z] &&
+							i >= layerTransfer.waterLayer[x][z]){
+							blocks[x][y][z].setGrass();
+						}
+						else
+							blocks[x][y][z].setDirt();
+				}
+				//set sand
+				for(int i=0; i < layerTransfer.sandLayer[x][z]; ++i, ++y)
+					blocks[x][y][z].setSand();
+				//set water
+				for(int i=0; i < layerTransfer.waterLayer[x][z]; ++i, ++y)
+					blocks[x][y][z].setWater();
+				//set snow
+				for(int i=0; i < layerTransfer.snowLayer[x][z]; ++i, ++y)
+					blocks[x][y][z].setSnow();
+				//разместим стволы деревьев и крону, если только они поместятся в чанк
+				if(x >= (TREE_MAX_WIDTH-1)/2 && x<= BLOCK_COUNT-1-(TREE_MAX_WIDTH-1)/2 &&
+					z >= (TREE_MAX_WIDTH-1)/2 && z<= BLOCK_COUNT-1-(TREE_MAX_WIDTH-1)/2){
+					for(int i=0; i < layerTransfer.woodLayer[x][z]; ++i, ++y){
+						blocks[x][y][z].setWood();
+						const int currTreeHeight=layerTransfer.woodLayer[x][z];
+						if(i == currTreeHeight-1)
+							//поставим самый верхний блок листьев
+							blocks[x][y+1][z].setLeafs();
+						
+						if(i == 3){//нижнее основание кроны
+							if(blocks[x][y][z-1].getType() == AIR)
+								blocks[x][y][z-1].setLeafs();
+							if(blocks[x][y][z+1].getType() == AIR)
+								blocks[x][y][z+1].setLeafs();
+							if(blocks[x+1][y][z].getType() == AIR)
+								blocks[x+1][y][z].setLeafs();
+							if(blocks[x-1][y][z].getType() == AIR)
+								blocks[x-1][y][z].setLeafs();
+						}
+
+						if(i == currTreeHeight-1){//верхнее сужение кроны
+							if(blocks[x][y][z-1].getType() == AIR)
+								blocks[x][y][z-1].setLeafs();
+							if(blocks[x][y][z+1].getType() == AIR)
+								blocks[x][y][z+1].setLeafs();
+							if(blocks[x+1][y][z].getType() == AIR)
+								blocks[x+1][y][z].setLeafs();
+							if(blocks[x-1][y][z].getType() == AIR)
+								blocks[x-1][y][z].setLeafs();
+						}
+						if(i > 3 && i < currTreeHeight-1){//середина кроны
+							if(blocks[x][y][z-1].getType() == AIR)
+								blocks[x][y][z-1].setLeafs();
+							if(blocks[x+1][y][z-1].getType() == AIR)
+								blocks[x+1][y][z-1].setLeafs();
+							if(blocks[x+1][y][z].getType() == AIR)
+								blocks[x+1][y][z].setLeafs();
+							if(blocks[x+1][y][z+1].getType() == AIR)
+								blocks[x+1][y][z+1].setLeafs();
+							if(blocks[x][y][z+1].getType() == AIR)
+								blocks[x][y][z+1].setLeafs();
+							if(blocks[x-1][y][z+1].getType() == AIR)
+								blocks[x-1][y][z+1].setLeafs();
+							if(blocks[x-1][y][z].getType() == AIR)
+								blocks[x-1][y][z].setLeafs();
+							if(blocks[x-1][y][z-1].getType() == AIR)
+								blocks[x-1][y][z-1].setLeafs();
+						}
+
+					}
 				}
 			}
 	}

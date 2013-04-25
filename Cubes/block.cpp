@@ -27,6 +27,26 @@ void Block::setSand(){
 	transparent=false;
 }
 
+void Block::setWater(){
+	type=WATER;
+	transparent=false;
+}
+
+void Block::setLeafs(){
+	type=LEAFS;
+	transparent=false;
+}
+
+void Block::setWood(){
+	type=WOOD;
+	transparent=false;
+}
+
+void Block::setSnow(){
+	type=SNOW;
+	transparent=false;
+}
+
 char Block::getType(){
 	return type;
 }

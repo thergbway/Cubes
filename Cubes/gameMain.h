@@ -9,6 +9,7 @@
 #include "info.h"
 #include "settings.h"
 #include "kmcontroller.h"
+#include "dayNightCycleManager.h"
 
 class Graphics;
 class Console;
@@ -18,6 +19,7 @@ class Player;
 class Info;
 class Settings;
 class KMController;
+class DayNightCycleManager;
 
 class GameMain: public QObject
 {
@@ -26,6 +28,7 @@ class GameMain: public QObject
 public:
 	QMainWindow* mainWindow;
 	QTimer* mainGameCycleTimer;
+	DayNightCycleManager* dayNightCycleManager;
 	Graphics* graphics;
 	Console* console;
 	State* state;

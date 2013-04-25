@@ -15,6 +15,7 @@
     <ClCompile Include="blocktransparencyaround.cpp" />
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="dayNightCycleManager.cpp" />
     <ClCompile Include="gameDataPreloader.cpp" />
     <ClCompile Include="gameMain.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_gameMain.cpp">
@@ -54,6 +55,7 @@
     <ClInclude Include="blocktransparencyaround.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="console.h" />
+    <ClInclude Include="dayNightCycleManager.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="gameDataPreloader.h" />
     <ClInclude Include="simpleArray.h" />

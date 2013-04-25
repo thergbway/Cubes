@@ -7,6 +7,7 @@
 GameMain::GameMain(QMainWindow* _mainWin)
 {
 	mainWindow=_mainWin;
+	dayNightCycleManager= new DayNightCycleManager(this);
 	settings= new Settings(this);
 	info= new Info(this);
 	console= new Console(this);

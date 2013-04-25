@@ -15,12 +15,20 @@ public:
 	int pointsOfGrassSideToDraw;
 	int pointsOfStoneToDraw;
 	int pointsOfSandToDraw;
+	int pointsOfWaterToDraw;
+	int pointsOfLeafsToDraw;
+	int pointsOfWoodToDraw;
+	int pointsOfSnowToDraw;
 	//offsets
 	int offsetOfDirt;
 	int offsetOfGrassTop;
 	int offsetOfGrassSide;
 	int offsetOfStone;
 	int offsetOfSand;
+	int offsetOfWater;
+	int offsetOfLeafs;
+	int offsetOfWood;
+	int offsetOfSnow;
 
 	VBOBoxTransferInfo& operator=(const VBOBoxTransferInfo&);
 };
