@@ -13,12 +13,12 @@ private:
 	GameMain* gameMain;
 	clock_t lastFrameTime;
 	double maxWalkSpeed;
+	double maxRunSpeed;
 	double coorX;
 	double coorY;
 	double coorZ;
 	double horRot;
 	double vertRot;
-	Vector3D movingVector;//вектор движения
 	//functions
 public:
 	Player(GameMain* gameMainPtr);

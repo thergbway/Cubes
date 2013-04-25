@@ -33,6 +33,6 @@ public:
 	VBOBoxTransferInfo& operator=(const VBOBoxTransferInfo&);
 };
 
-VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> &verticesFinal,SimpleArray<GLfloat, SIZE_OF_TEXTURES_FINAL_ARRAYS> &texturesFinal,
+VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> &verticesFinal, SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> &normalsFinal,SimpleArray<GLfloat, SIZE_OF_TEXTURES_FINAL_ARRAYS> &texturesFinal,
 	GameMain* gameMain,Chunk* chunk,int chNumX,int chNumZ,bool isPreloading,
 	Chunk* chBackPreloaded = nullptr,Chunk* chFrontPreloaded = nullptr,Chunk* chLeftPreloaded = nullptr,Chunk* chRightPreloaded = nullptr);//функция, заносящая графическую геометрию в передаваемые векторы и отдающая информацию дополнительную

@@ -18,27 +18,32 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 
 	//финальные массивы вершин и текстурных координат
 	SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> verticesFinal;
+	SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> normalsFinal;
 	SimpleArray<GLfloat,SIZE_OF_TEXTURES_FINAL_ARRAYS> texturesFinal;
 	//количества точек и смещения
 	VBOBoxTransferInfo vBOBoxTransferInfo;
 	//количество точек в массивах
 	int verticesFinalElementsCount=0;
+	int normalsFinalElementsCount=0;
 	int texturesFinalElementsCount=0;
 
 	if(vBOBoxPrebuild == nullptr){//если обычная медленная загрузка
 		//заполним массивы
-		vBOBoxTransferInfo=updateGraphicsArraysForChunk(verticesFinal,texturesFinal,gameMain,chunkPtr,
+		vBOBoxTransferInfo=updateGraphicsArraysForChunk(verticesFinal,normalsFinal,texturesFinal,gameMain,chunkPtr,
 			chNumX,chNumZ,false,nullptr,nullptr,nullptr,nullptr);
 		verticesFinalElementsCount=verticesFinal.getElementsCount();
+		normalsFinalElementsCount=normalsFinal.getElementsCount();
 		texturesFinalElementsCount=texturesFinal.getElementsCount();
 	}
 	else{//если используем предзагрузку
 		vBOBoxTransferInfo=	*(vBOBoxPrebuild->vBOBoxTransferInfo);
 
 		verticesFinal=vBOBoxPrebuild->verticesFinal;
+		normalsFinal=vBOBoxPrebuild->normalsFinal;
 		texturesFinal=vBOBoxPrebuild->texturesFinal;
 
 		verticesFinalElementsCount=vBOBoxPrebuild->verticesFinal.getElementsCount();
+		normalsFinalElementsCount=vBOBoxPrebuild->normalsFinal.getElementsCount();
 		texturesFinalElementsCount=vBOBoxPrebuild->texturesFinal.getElementsCount();
 	}
 
@@ -70,11 +75,17 @@ VBOBox::VBOBox(int chNumX,int chNumZ,GameMain* _gameMain,GLuint* _texturesArrayP
 	VBO.bind();
 	VBO.allocate((void *)&verticesFinal[0],verticesFinalElementsCount*sizeof(GLint));
 
+	NBO=QGLBuffer(QGLBuffer::VertexBuffer);
+	NBO.setUsagePattern( QGLBuffer::StaticDraw );
+	NBO.create();
+	NBO.bind();
+	NBO.allocate((void *)&normalsFinal[0],normalsFinalElementsCount*sizeof(GLint));
+
 	TBO=QGLBuffer(QGLBuffer::VertexBuffer);
 	TBO.setUsagePattern( QGLBuffer::StaticDraw );
 	TBO.create();
 	TBO.bind();
-	TBO.allocate((void *)&texturesFinal[0],texturesFinalElementsCount*sizeof(GLfloat));	
+	TBO.allocate((void *)&texturesFinal[0],texturesFinalElementsCount*sizeof(GLfloat));
 }
 
 VBOBox::~VBOBox(){
@@ -82,10 +93,13 @@ VBOBox::~VBOBox(){
 
 void VBOBox::draw(){
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	VBO.bind();
 	glVertexPointer ( 3, GL_INT, 0, NULL );
+	NBO.bind();
+	glNormalPointer ( GL_INT, 0, NULL );
 	TBO.bind();
 	glTexCoordPointer ( 2, GL_FLOAT, 0, NULL );
 
@@ -126,6 +140,7 @@ void VBOBox::draw(){
 	glDrawArrays(GL_QUADS, offsetOfSnow, pointsOfSnowToDraw);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

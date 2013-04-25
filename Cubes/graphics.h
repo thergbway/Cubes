@@ -26,6 +26,8 @@ private:
 	//functions
 public:
 	Graphics(GameMain* gameMainPtr,GameDataPreloader* gameDataPreloader,QWidget *parent = 0);
+	void adjustBackLightingAndClearColor(int GL_LIGHT_ONE,int GL_LIGHT_TWO,int GL_LIGHT_THREE,int GL_LIGHT_FOUR,int GL_LIGHT_FIVE);//включить соответствующее фоновое освещение
+	void adjustPlayerLight(int GL_LIGHT_NUMBER, int GL_LIGHT_NUMBER_USUAL);//включить фонарик и лампочку
 protected:
 	void initializeGL();
 	void resizeGL(int width, int height);

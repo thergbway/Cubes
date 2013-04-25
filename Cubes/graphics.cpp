@@ -36,15 +36,13 @@ Graphics::Graphics(GameMain* gameMainPtr,GameDataPreloader* _gameDataPreloader,Q
 };
 
 void Graphics::initializeGL(){
-	qglClearColor(Qt::cyan);
+	qglClearColor(Qt::cyan);//только дл€ инициализации, во врем€ работы используем другой цвет
 	glEnable(GL_TEXTURE_2D);//включаем текстуры
 	glEnable(GL_DEPTH_TEST);//тест глубины
 	glEnable(GL_NORMALIZE);//нормировка
 	glShadeModel(GL_SMOOTH);//интерпол€ци€ цветов
 	glFrontFace(GL_CCW);//лицевые грани по обходу против часовой стрелки
-	//glEnable(GL_LIGHTING);//включиить свет
-	//glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);//модель освещени€
-	//glEnable(GL_LIGHT0);//источник 0
+	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE);//односторонн€€ модель освещени€
 	//glEnable(GL_COLOR_MATERIAL) ;// добавить цветные материалы
 	glEnable(GL_CULL_FACE);//показывать только внешние поверхности
 
@@ -113,7 +111,21 @@ void Graphics::paintGL(){
 	Vector3D lookingPoint=gameMain->player->getVectorOfPlayerView();//вектор, куда игрок смотрит
 	gluLookAt(gameMain->player->getCoorX(),gameMain->player->getCoorY(),gameMain->player->getCoorZ(),
 		gameMain->player->getCoorX()+lookingPoint.getX(),gameMain->player->getCoorY()+lookingPoint.getY(),gameMain->player->getCoorZ()+lookingPoint.getZ(),
-		0,1,0);
+		0,1,0);//правильно расположили камеру
+
+	glEnable(GL_LIGHTING);//включим свет
+	glEnable(GL_LIGHT1);//turn on the first light
+	glEnable(GL_LIGHT2);//turn on the second light
+	glEnable(GL_LIGHT3);//turn on the third light
+	glEnable(GL_LIGHT4);//turn on the fourth light
+	glEnable(GL_LIGHT5);//turn on the 5th light
+
+	adjustBackLightingAndClearColor(GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5);//освещение фоновое и цвет неба
+	if(gameMain->state->isPlayerLightsOn()){
+		glEnable(GL_LIGHT6);//turn on the 6th light
+		glEnable(GL_LIGHT7);//turn on the 7th light
+		adjustPlayerLight(GL_LIGHT6, GL_LIGHT7);//фонарик игрока и лампочка
+	}
 
 	for(std::map<const int,VBOBox*>::iterator iter=VBOBoxMap.begin(); iter!=VBOBoxMap.end(); ++iter){
 		//приравн€ем у вектора lookingPoint координату y к нулю (получив новый вектор), тк иначе будут неправильные вычислени€
@@ -133,6 +145,14 @@ void Graphics::paintGL(){
 				iter->second->draw();
 		}
 	}
+	glDisable(GL_LIGHT7);//turn off the 7th light
+	glDisable(GL_LIGHT6);//turn off the 6th light
+	glDisable(GL_LIGHT5);//turn off the 5th light
+	glDisable(GL_LIGHT4);//turn off the fourth light
+	glDisable(GL_LIGHT3);//turn off the third light
+	glDisable(GL_LIGHT2);//turn off the second light
+	glDisable(GL_LIGHT1);//turn off the first light
+	glDisable(GL_LIGHTING);//включим свет
 }
 
 void Graphics::loadAllTextures(){
@@ -243,4 +263,213 @@ void Graphics::loadAllTextures(){
 	glBindTexture(GL_TEXTURE_2D, textures[SNOW_TEX_INDEX]);
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, textureSnow->sizeX, textureSnow->sizeY, 0,GL_RGB, GL_UNSIGNED_BYTE, textureSnow->data);
 	gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,textureSnow->sizeX,textureSnow->sizeY,GL_RGB,GL_UNSIGNED_BYTE,textureSnow->data);//создание мипмапа
+}
+
+void Graphics::adjustBackLightingAndClearColor(int GL_LIGHT_ONE,int GL_LIGHT_TWO,int GL_LIGHT_THREE,int GL_LIGHT_FOUR,int GL_LIGHT_FIVE){
+	int currentTime=gameMain->dayNightCycleManager->getCurrentTime();
+	//утром освещение краснеет, а ночью синеет
+	//c 0 до DAWN_TIME идет рассвет с красным светом, который под конец становитс€ белым.
+	//с DAY_NIGHT_CYCLE_TIME идет потемнение с посинением за врем€ SUNSET_TIME.
+
+	//направление освещени€
+	float light_direction_down[] = {0.0, 1.0, 0.0, 0.0};
+	float light_direction_left[] = {-1.0, 0.0, 0.0, 0.0};
+	float light_direction_right[] = {1.0, 0.0, 0.0, 0.0};
+	float light_direction_front[] = {0.0, 0.0, 1.0, 0.0};
+	float light_direction_back[] = {0.0, 0.0, -1.0, 0.0};
+
+
+	//вы€сн€ем какое сейчас врем€ и выбираем освещение согласно правилам
+	if(currentTime >= 0 && currentTime < DAWN_TIME){
+		//сейчас рассвет
+		//compute shade
+		float shade=(float)currentTime/(float)DAWN_TIME;
+		float shadeRed=(float)currentTime/(float)DAWN_TIME*RED_SHADE;
+		if(shadeRed > 1.0)
+			shadeRed=1.0;
+		float light_color[] = {shadeRed,shade,shade};
+
+		glLightfv(GL_LIGHT_ONE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_POSITION, light_direction_down);
+
+		glLightfv(GL_LIGHT_TWO, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_POSITION, light_direction_left);
+
+		glLightfv(GL_LIGHT_THREE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_POSITION, light_direction_right);
+
+		glLightfv(GL_LIGHT_FOUR, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_POSITION, light_direction_front);
+
+		glLightfv(GL_LIGHT_FIVE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_POSITION, light_direction_back);
+
+		//небо
+		glClearColor(shadeRed*0,shade,shade,1.0);
+
+		return;
+	}
+
+	if(currentTime >= DAWN_TIME && currentTime < DAY_NIGHT_CYCLE_TIME/2){
+		//сейчас день
+		float light_color[] = {1.0,1.0,1.0};
+
+		glLightfv(GL_LIGHT_ONE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_POSITION, light_direction_down);
+
+		glLightfv(GL_LIGHT_TWO, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_POSITION, light_direction_left);
+
+		glLightfv(GL_LIGHT_THREE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_POSITION, light_direction_right);
+
+		glLightfv(GL_LIGHT_FOUR, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_POSITION, light_direction_front);
+
+		glLightfv(GL_LIGHT_FIVE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_POSITION, light_direction_back);
+
+		//небо
+		glClearColor(1.0*0,1.0,1.0,1.0);
+
+		return;
+	}
+
+	if(currentTime >= DAY_NIGHT_CYCLE_TIME/2 && currentTime < DAY_NIGHT_CYCLE_TIME/2+SUNSET_TIME){
+		//сейчас закат
+		//compute shade
+		float shadeBlue=((float)currentTime-DAY_NIGHT_CYCLE_TIME/2)/(float)SUNSET_TIME;
+		shadeBlue=1.0-shadeBlue;//не с 0 до 1, а с 1 до 0
+		float shade=((float)currentTime-DAY_NIGHT_CYCLE_TIME/2)/(float)SUNSET_TIME*BLUE_SHADE;
+		if(shade > 1.0)
+			shade=1.0;
+		shade = 1.0 - shade;
+		float light_color[] = {shade,shade,shadeBlue};
+		
+		glLightfv(GL_LIGHT_ONE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_POSITION, light_direction_down);
+
+		glLightfv(GL_LIGHT_TWO, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_POSITION, light_direction_left);
+
+		glLightfv(GL_LIGHT_THREE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_POSITION, light_direction_right);
+
+		glLightfv(GL_LIGHT_FOUR, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_POSITION, light_direction_front);
+
+		glLightfv(GL_LIGHT_FIVE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_POSITION, light_direction_back);
+
+		//небо
+		glClearColor(shade*0,shade,shadeBlue,1.0);
+
+		return;
+	}
+
+	if(currentTime >= DAY_NIGHT_CYCLE_TIME/2+SUNSET_TIME && currentTime < DAY_NIGHT_CYCLE_TIME){
+		//сейчас ночь
+		float light_color[] = {0.0,0.0,0.0};
+		
+		glLightfv(GL_LIGHT_ONE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_ONE, GL_POSITION, light_direction_down);
+
+		glLightfv(GL_LIGHT_TWO, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_TWO, GL_POSITION, light_direction_left);
+
+		glLightfv(GL_LIGHT_THREE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_THREE, GL_POSITION, light_direction_right);
+
+		glLightfv(GL_LIGHT_FOUR, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FOUR, GL_POSITION, light_direction_front);
+
+		glLightfv(GL_LIGHT_FIVE, GL_DIFFUSE, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_AMBIENT, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_SPECULAR, light_color);
+		glLightfv(GL_LIGHT_FIVE, GL_POSITION, light_direction_back);
+
+		//небо
+		glClearColor(0.0,0.0,0.0,1.0);
+
+		return;
+	}
+	else{
+		while(true){
+			qDebug()<<"Error in checking time in adjustBackLightingAndClearColor() function in graphics.cpp!";
+		}
+	}
+}
+
+void Graphics::adjustPlayerLight(int GL_LIGHT_NUMBER_PROJECTOR, int GL_LIGHT_NUMBER_USUAL){
+
+	Vector3D lookingDirection=gameMain->player->getVectorOfPlayerView();//вектор, куда игрок смотрит
+	int playerPosX=gameMain->player->getCoorX();
+	int playerPosY=gameMain->player->getCoorY();
+	int playerPosZ=gameMain->player->getCoorZ();
+
+	//ѕ–ќ∆≈ “ќ–
+	GLfloat light_color[] = {(GLfloat)1.0, (GLfloat)1.0, (GLfloat)0.7};
+	float light_position[] = {playerPosX, playerPosY, playerPosZ, 1.0};
+	float light_spot_direction[] = {lookingDirection.getX(), lookingDirection.getY(), lookingDirection.getZ()};
+	glLightfv(GL_LIGHT_NUMBER_PROJECTOR, GL_DIFFUSE, light_color);
+	glLightfv(GL_LIGHT_NUMBER_PROJECTOR, GL_AMBIENT, light_color);
+	glLightfv(GL_LIGHT_NUMBER_PROJECTOR, GL_SPECULAR, light_color);
+	glLightfv(GL_LIGHT_NUMBER_PROJECTOR, GL_POSITION, light_position);
+	glLightf(GL_LIGHT_NUMBER_PROJECTOR, GL_SPOT_CUTOFF, 40);
+	glLightfv(GL_LIGHT_NUMBER_PROJECTOR, GL_SPOT_DIRECTION, light_spot_direction);
+	glLightf(GL_LIGHT_NUMBER_PROJECTOR, GL_SPOT_EXPONENT, 13.0);
+	//убывание интенсивности с рассто€нием
+	glLightf(GL_LIGHT_NUMBER_PROJECTOR, GL_CONSTANT_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT_NUMBER_PROJECTOR, GL_LINEAR_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT_NUMBER_PROJECTOR, GL_QUADRATIC_ATTENUATION, (GLfloat)0.00000005);
+
+	//ќЅџ„Ќџ… “ќ„≈„Ќџ… »—“ќ„Ќ» 
+	float position[4] = {playerPosX, playerPosY, playerPosZ, 1.0};
+	GLfloat color[4] = {(GLfloat)1.0, (GLfloat)1.0, (GLfloat)0.7, (GLfloat)1.0};
+	glLightfv(GL_LIGHT_NUMBER_USUAL, GL_DIFFUSE, color);
+	glLightfv(GL_LIGHT_NUMBER_USUAL, GL_AMBIENT, color);
+	glLightfv(GL_LIGHT_NUMBER_USUAL, GL_SPECULAR, color);
+	glLightfv(GL_LIGHT_NUMBER_USUAL, GL_POSITION, position);
+	//убывание интенсивности с рассто€нием
+	glLightf(GL_LIGHT_NUMBER_USUAL, GL_CONSTANT_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT_NUMBER_USUAL, GL_LINEAR_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT_NUMBER_USUAL, GL_QUADRATIC_ATTENUATION, (GLfloat)0.0000008);
 }

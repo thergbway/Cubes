@@ -4,12 +4,11 @@
 #include "player.h"
 #include "gameMain.h"
 
-Player::Player(GameMain* gameMainPtr)
-	:movingVector(0,0,0)
-{
+Player::Player(GameMain* gameMainPtr){
 	gameMain=gameMainPtr;
 	lastFrameTime=clock();
 	maxWalkSpeed=gameMain->settings->getMaxWalkSpeed();
+	maxRunSpeed=gameMain->settings->getMaxRunSpeed();
 	coorX=gameMain->settings->getSpawnPointX();
 	coorY=gameMain->settings->getSpawnPointY();
 	coorZ=gameMain->settings->getSpawnPointZ();
@@ -38,11 +37,16 @@ void Player::updatePlayerCoord(){
 	double secFromLastFrame=(double)(clock() - lastFrameTime) / CLOCKS_PER_SEC;
 	lastFrameTime=clock();
 
-	//на сколько теперь переместиться?
-	double movingWalkDist=maxWalkSpeed*secFromLastFrame+0.00001;//добавка нужна, чтоб игра не ломалась
-
 	if(gameMain->state->isFlyingModOn()){
 		//обработаем клавиши в режиме полета
+
+		//на сколько теперь переместиться?
+		double movingWalkDist;
+		if(gameMain->kMController->leftShiftPressed)
+			movingWalkDist=maxRunSpeed*secFromLastFrame+0.00001;//добавка нужна, чтоб игра не ломалась
+		else
+			movingWalkDist=maxWalkSpeed*secFromLastFrame+0.00001;//добавка нужна, чтоб игра не ломалась
+
 		Vector3D lookingDir=getVectorOfPlayerView();
 		lookingDir.setNewLength(movingWalkDist);
 		if(gameMain->kMController->wPressed){
@@ -75,7 +79,73 @@ void Player::updatePlayerCoord(){
 		}
 	}
 	else{
-		//обработаем клавиши в обычном режиме
+		//обработаем клавиши в режиме с привязкой по высоте
+
+		//на сколько теперь переместиться?
+		double movingWalkDist;
+		if(gameMain->kMController->leftShiftPressed)
+			movingWalkDist=maxRunSpeed*secFromLastFrame+0.00001;//добавка нужна, чтобы игра не ломалась
+		else
+			movingWalkDist=maxWalkSpeed*secFromLastFrame+0.00001;//добавка нужна, чтобы игра не ломалась
+
+		Vector3D lookingDir=getVectorOfPlayerView();
+		lookingDir.setNewLength(movingWalkDist);
+		if(gameMain->kMController->wPressed){
+			coorX+=lookingDir.getX();
+			coorY+=lookingDir.getY();
+			coorZ+=lookingDir.getZ();
+		}
+		if(gameMain->kMController->sPressed){
+			coorX-=lookingDir.getX();
+			coorY-=lookingDir.getY();
+			coorZ-=lookingDir.getZ();
+		}
+		Vector3D dirRight=lookingDir*Vector3D(0,100,0);
+		dirRight.setNewLength(movingWalkDist);
+		if(gameMain->kMController->aPressed){
+			coorX-=dirRight.getX();
+			coorY-=dirRight.getY();
+			coorZ-=dirRight.getZ();
+		}
+		if(gameMain->kMController->dPressed){
+			coorX+=dirRight.getX();
+			coorY+=dirRight.getY();
+			coorZ+=dirRight.getZ();
+		}
+		if(gameMain->kMController->spacePressed){
+			coorY+=movingWalkDist;
+		}
+		if(gameMain->kMController->leftCtrlPressed){
+			coorY-=movingWalkDist;
+		}
+
+		//значение изменения высоты, если нужно
+		double autoChangingHeightDist=SPEED_OF_AUTO_CHANGING_HEIGHT*secFromLastFrame+0.00001;//добавка нужна, чтобы игра не ломалась
+
+		//текущая высота поверхности с учетом деревьев
+		int currSurfaceHeight=0;
+		Chunk* chunkPtr=gameMain->world->getChunkPointer((CHUNKS_COUNT-1)/2, (CHUNKS_COUNT-1)/2);
+		int plX=coorX;
+		int plZ=coorZ;
+		int modX=plX % (BLOCK_COUNT*CUBE_SIZE);
+		int modZ=plZ % (BLOCK_COUNT*CUBE_SIZE);
+		int blIndX = modX / CUBE_SIZE;
+		int blIndZ = modZ / CUBE_SIZE;
+		if(blIndX < 0)
+			blIndX = BLOCK_COUNT-1-(-blIndX);
+		if(blIndZ < 0)
+			blIndZ = BLOCK_COUNT-1-(-blIndZ);
+		for(int i=0; i<BLOCK_HEIGHT_COUNT; ++i){
+			if((chunkPtr->blocks[blIndX][i][blIndZ]).getType() != AIR)
+				currSurfaceHeight = (i+1)*CUBE_SIZE;
+		}
+		currSurfaceHeight+= PLAYER_HEIGHT;
+		//если ниже интервала
+		if(coorY < currSurfaceHeight - ALLOWABLE_INTERVAL)
+			coorY+=autoChangingHeightDist;
+		//если выше интервала
+		if(coorY > currSurfaceHeight + ALLOWABLE_INTERVAL)
+			coorY-=autoChangingHeightDist;
 	}
 }
 

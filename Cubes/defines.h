@@ -33,7 +33,19 @@ const int LEAFS=7;//def 7
 const int WOOD=8;//def 8
 const int SNOW=9;//def 9
 //day night values
-const int DAY_NIGHT_CYCLE_TIME=120000;//def 120000. ¬рем€ цикла день-ночь. ¬ мс.
+const int DAY_NIGHT_CYCLE_TIME=140000;//def 140000. ¬рем€ цикла день-ночь. ¬ мс.
+const int DAWN_TIME=20000;//def 20000. ¬рем€ рассвета в мс.
+const int SUNSET_TIME=30000;//def 30000. ¬рем€ заката с посинением
+const double RED_SHADE=1.3;//Ќасколько красным делать рассвет
+const double BLUE_SHADE=1.15;//Ќасолько синим делать закат
+const int STARTING_TIME=130000;//текущее врем€ на момент запуска
+const float SKY_RED_FACTOR=0.0;//красный оттенок нормального неба
+const float SKY_GREEN_FACTOR=1.0;//зеленый оттенок нормального неба
+const float SKY_BLUE_FACTOR=1.0;//синий оттенок нормального неба
+//player
+const int SPEED_OF_AUTO_CHANGING_HEIGHT=3*CUBE_SIZE;//скорость автоматического изменени€ высоты в соответствующем режиме
+const int PLAYER_HEIGHT=4*CUBE_SIZE;//высота, на кот. должен находитс€ игрок над поверхностью в соотв. режиме
+const int ALLOWABLE_INTERVAL=1*CUBE_SIZE;//допустимае отклонение дл€ PLAYER_HEIGHT
 //graphics
 const int VBOBOX_TO_BUILD_IN_ONE_FRAME=10;//def 1. VBOBox, которое будет строитс€ за 1 кадр
 const int MIN_WIDTH=400;//def 400

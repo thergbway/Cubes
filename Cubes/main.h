@@ -34,7 +34,7 @@ int main(int argc,char* argv[])
 	mainWindow->show();
 	splashScreen->finish(mainWindow);
 	delete splashScreen;
-
+	
 	qDebug()<<"NOTE: random has only 2 iterations";
 
 	//starting makeGameCycle

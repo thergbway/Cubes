@@ -18,5 +18,4 @@ private:
 public:
 	DayNightCycleManager(GameMain* gameMain);
 	int getCurrentTime();
-	bool isDay();
 };

@@ -6,7 +6,7 @@
 
 WorldLayerHolder::WorldLayerHolder(){
 	//инициализируем в некоторой точке
-	reloadLayers(15*CUBE_SIZE,-27*CUBE_SIZE);
+	reloadLayers(0*CUBE_SIZE,0*CUBE_SIZE);
 }
 
 void WorldLayerHolder::updateLayerTransferForChunk(int coorChX,int coorChZ,LayerTransfer& outputLayerTransfer){

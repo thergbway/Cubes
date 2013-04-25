@@ -19,6 +19,7 @@ class VBOBox{
 private:
 	GameMain* gameMain;
 	QGLBuffer VBO;
+	QGLBuffer NBO;//normal buffer object like VBO
 	QGLBuffer TBO;//texture buffer object like VBO
 	GLuint* texturesPtr;
 

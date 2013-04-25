@@ -1,8 +1,8 @@
 #pragma once
 #include <math.h>
-#include "gameMain.h"
 #include <stdlib.h>
 #include <QDebug>
+#include "gameMain.h"
 
 GameMain::GameMain(QMainWindow* _mainWin)
 {
@@ -33,5 +33,4 @@ void GameMain::makeGameStep(){
 	kMController->moveCursorToDefaultPlace();
 	world->updateWorld();
 	graphics->updateGL();
-	static int frameCountTest=0;
 }

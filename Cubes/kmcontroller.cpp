@@ -13,6 +13,7 @@ KMController::KMController(GameMain* _gameMain){
 	sPressed=false;
 	dPressed=false;
 	spacePressed=false;
+	leftShiftPressed=false;
 	leftCtrlPressed=false;
 
 	deltaX=0;
@@ -60,8 +61,17 @@ bool KMController::eventFilter(QObject *target, QEvent *event)
 		case Qt::Key_D:
 			dPressed=true;
 			return true;
+		case Qt::Key_F:
+			gameMain->state->switchPlayerLights();
+			return true;
+		case Qt::Key_G:
+			gameMain->state->switchFlyingMode();
+			return true;
 		case Qt::Key_Space:
 			spacePressed=true;
+			return true;
+		case Qt::Key_Shift:
+			leftShiftPressed=true;
 			return true;
 		case Qt::Key_Control:
 			leftCtrlPressed=true;
@@ -89,8 +99,14 @@ bool KMController::eventFilter(QObject *target, QEvent *event)
 		case Qt::Key_D:
 			dPressed=false;
 			return true;
+		case Qt::Key_F:
+			//do nothing
+			return true;
 		case Qt::Key_Space:
 			spacePressed=false;
+			return true;
+		case Qt::Key_Shift:
+			leftShiftPressed=false;
 			return true;
 		case Qt::Key_Control:
 			leftCtrlPressed=false;

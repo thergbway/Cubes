@@ -12,7 +12,7 @@ VBOBoxPrebuild::VBOBoxPrebuild(Chunk* chunkPtr ,Chunk* chBackPreloaded,Chunk* ch
 		vBOBoxTransferInfo=new VBOBoxTransferInfo;
 
 		//обновим векторы, получим выходные данные
-		*vBOBoxTransferInfo=updateGraphicsArraysForChunk(verticesFinal,texturesFinal,nullptr
+		*vBOBoxTransferInfo=updateGraphicsArraysForChunk(verticesFinal,normalsFinal,texturesFinal,nullptr
 			,chunkPtr,0,0,true,chBackPreloaded,chFrontPreloaded,chLeftPreloaded,chRightPreloaded);
 		//update coordinates of appropriate chunk
 		coordAppChX=chunkPtr->getCoordX();

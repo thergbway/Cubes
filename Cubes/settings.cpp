@@ -5,12 +5,13 @@
 Settings::Settings(GameMain* gameMainPtr)
 {
 	gameMain=gameMainPtr;
-	spawnPointX=0*CUBE_SIZE;
-	spawnPointY=90*CUBE_SIZE;
-	spawnPointZ=0*CUBE_SIZE;
-	maxWalkSpeed=70*CUBE_SIZE;
+	spawnPointX=2048*CUBE_SIZE;
+	spawnPointY=110*CUBE_SIZE;
+	spawnPointZ=2048*CUBE_SIZE;
+	maxWalkSpeed=5*CUBE_SIZE;
+	maxRunSpeed=15*CUBE_SIZE;
 	sensitivity=0.1;
-	mouseReleased=false;
+	mouseReleased=true;
 	flyingModOn=true;
 }
 
@@ -28,6 +29,10 @@ double Settings::getSpawnPointZ(){
 
 double Settings::getMaxWalkSpeed(){
 	return maxWalkSpeed;
+}
+
+double Settings::getMaxRunSpeed(){
+	return maxRunSpeed;
 }
 
 double Settings::getSensitivity(){

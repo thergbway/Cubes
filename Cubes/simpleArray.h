@@ -27,6 +27,36 @@ public:
 		array[elementsUsed]=t;
 		++elementsUsed;
 	};
+	void pushUpNormal(){//добавить 3d вектор-нормаль вверх (три значения)
+		push_back(0);
+		push_back(1);
+		push_back(0);
+	};	
+	void pushDownNormal(){//добавить 3d вектор-нормаль вниз (три значения)
+		push_back(0);
+		push_back(-1);
+		push_back(0);
+	};
+	void pushBackNormal(){//добавить 3d вектор-нормаль назад (три значения)
+		push_back(0);
+		push_back(0);
+		push_back(-1);
+	};
+	void pushFrontNormal(){//добавить 3d вектор-нормаль вперед (три значения)
+		push_back(0);
+		push_back(0);
+		push_back(1);
+	};
+	void pushLeftNormal(){//добавить 3d вектор-нормаль влево (три значения)
+		push_back(-1);
+		push_back(0);
+		push_back(0);
+	};
+	void pushRightNormal(){//добавить 3d вектор-нормаль вправо (три значения)
+		push_back(1);
+		push_back(0);
+		push_back(0);
+	};
 	int getElementsCount(){return elementsUsed;};
 	void goToStart(){elementsUsed=0;};
 };

@@ -27,6 +27,7 @@ VBOBoxTransferInfo& VBOBoxTransferInfo::operator=(const VBOBoxTransferInfo& v){
 }
 
 VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> &verticesFinal
+	,SimpleArray<GLint,SIZE_OF_VERTICES_FINAL_ARRAYS> &normalsFinal
 	,SimpleArray<GLfloat,SIZE_OF_TEXTURES_FINAL_ARRAYS> &texturesFinal,
 	GameMain* gameMain,Chunk* _chunkPtr,int chNumX,int chNumZ,bool isPreloading,
 	Chunk* chBackPreloaded /*= nullptr*/,Chunk* chFrontPreloaded /*= nullptr*/,
@@ -67,30 +68,39 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 		int offsetOfSnow=0;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_DIRT_ARRAYS> verticesDirt;
+		SimpleArray<GLint,SIZE_OF_VERTICES_DIRT_ARRAYS> normalsDirt;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_DIRT_ARRAYS> texturesDirt;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_GRASS_TOP_ARRAYS> verticesGrassTop;
+		SimpleArray<GLint,SIZE_OF_VERTICES_GRASS_TOP_ARRAYS> normalsGrassTop;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_GRASS_TOP_ARRAYS> texturesGrassTop;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_GRASS_SIDE_ARRAYS> verticesGrassSide;
+		SimpleArray<GLint,SIZE_OF_VERTICES_GRASS_SIDE_ARRAYS> normalsGrassSide;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_GRASS_SIDE_ARRAYS> texturesGrassSide;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_STONE_ARRAYS> verticesStone;
+		SimpleArray<GLint,SIZE_OF_VERTICES_STONE_ARRAYS> normalsStone;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_STONE_ARRAYS> texturesStone;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_SAND_ARRAYS> verticesSand;
+		SimpleArray<GLint,SIZE_OF_VERTICES_SAND_ARRAYS> normalsSand;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_SAND_ARRAYS> texturesSand;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_WATER_ARRAYS> verticesWater;
+		SimpleArray<GLint,SIZE_OF_VERTICES_WATER_ARRAYS> normalsWater;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_WATER_ARRAYS> texturesWater;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_LEAFS_ARRAYS> verticesLeafs;
+		SimpleArray<GLint,SIZE_OF_VERTICES_LEAFS_ARRAYS> normalsLeafs;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_LEAFS_ARRAYS> texturesLeafs;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_WOOD_ARRAYS> verticesWood;
+		SimpleArray<GLint,SIZE_OF_VERTICES_WOOD_ARRAYS> normalsWood;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_WOOD_ARRAYS> texturesWood;
 
 		SimpleArray<GLint,SIZE_OF_VERTICES_SNOW_ARRAYS> verticesSnow;
+		SimpleArray<GLint,SIZE_OF_VERTICES_SNOW_ARRAYS> normalsSnow;
 		SimpleArray<GLfloat,SIZE_OF_TEXTURES_SNOW_ARRAYS> texturesSnow;
 
 		//get chunk`s coordinates
@@ -144,24 +154,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushUpNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushUpNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushUpNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushUpNormal();
 						}
 
 						//down
@@ -171,24 +185,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushDownNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushDownNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushDownNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushDownNormal();
 						}
 
 						//front
@@ -198,24 +216,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushFrontNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushFrontNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushFrontNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushFrontNormal();
 						}
 
 						//back
@@ -225,24 +247,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushBackNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushBackNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushBackNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushBackNormal();
 						}
 
 						//left
@@ -252,24 +278,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushLeftNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushLeftNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushLeftNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushLeftNormal();
 						}
 
 						//right
@@ -279,24 +309,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushRightNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushRightNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY+CUBE_SIZE);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushRightNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushRightNormal();
 						}
 						break;
 					case GRASS:
@@ -307,24 +341,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesGrassTop.push_back(blCoordZ);
 							texturesGrassTop.push_back(1.0);
 							texturesGrassTop.push_back(0.0);
+							normalsGrassTop.pushUpNormal();
 
 							verticesGrassTop.push_back(blCoordX);
 							verticesGrassTop.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassTop.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassTop.push_back(1.0);
 							texturesGrassTop.push_back(1.0);
+							normalsGrassTop.pushUpNormal();
 
 							verticesGrassTop.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassTop.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassTop.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassTop.push_back(0.0);
 							texturesGrassTop.push_back(1.0);
+							normalsGrassTop.pushUpNormal();
 
 							verticesGrassTop.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassTop.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassTop.push_back(blCoordZ);
 							texturesGrassTop.push_back(0.0);
 							texturesGrassTop.push_back(0.0);
+							normalsGrassTop.pushUpNormal();
 						}
 
 						//down
@@ -334,24 +372,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushDownNormal();
 
 							verticesDirt.push_back(blCoordX+CUBE_SIZE);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(1.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushDownNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ+CUBE_SIZE);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(1.0);
+							normalsDirt.pushDownNormal();
 
 							verticesDirt.push_back(blCoordX);
 							verticesDirt.push_back(blCoordY);
 							verticesDirt.push_back(blCoordZ);
 							texturesDirt.push_back(0.0);
 							texturesDirt.push_back(0.0);
+							normalsDirt.pushDownNormal();
 						}
 
 						//front		
@@ -361,24 +403,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushFrontNormal();
 
 							verticesGrassSide.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushFrontNormal();
 
 							verticesGrassSide.push_back(blCoordX);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushFrontNormal();
 
 							verticesGrassSide.push_back(blCoordX);
 							verticesGrassSide.push_back(blCoordY);
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushFrontNormal();
 						}			
 
 						//back		
@@ -388,24 +434,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushBackNormal();
 
 							verticesGrassSide.push_back(blCoordX);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushBackNormal();
 
 							verticesGrassSide.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushBackNormal();
 
 							verticesGrassSide.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordY);
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushBackNormal();
 						}
 
 						//left
@@ -415,24 +465,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushLeftNormal();
 
 							verticesGrassSide.push_back(blCoordX);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushLeftNormal();
 
 							verticesGrassSide.push_back(blCoordX);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushLeftNormal();
 
 							verticesGrassSide.push_back(blCoordX);
 							verticesGrassSide.push_back(blCoordY);
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushLeftNormal();
 						}			
 
 						//right		
@@ -442,24 +496,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushRightNormal();
 
 							verticesGrassSide.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ);
 							texturesGrassSide.push_back(1.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushRightNormal();
 
 							verticesGrassSide.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordY+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(1.0);
+							normalsGrassSide.pushRightNormal();
 
 							verticesGrassSide.push_back(blCoordX+CUBE_SIZE);
 							verticesGrassSide.push_back(blCoordY);
 							verticesGrassSide.push_back(blCoordZ+CUBE_SIZE);
 							texturesGrassSide.push_back(0.0);
 							texturesGrassSide.push_back(0.0);
+							normalsGrassSide.pushRightNormal();
 						}
 						break;
 					case STONE:
@@ -470,24 +528,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushUpNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushUpNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushUpNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushUpNormal();
 						}
 
 						//down
@@ -497,24 +559,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushDownNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushDownNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushDownNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushDownNormal();
 						}
 
 						//front
@@ -524,24 +590,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushFrontNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushFrontNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushFrontNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushFrontNormal();
 						}
 
 						//back
@@ -551,24 +621,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushBackNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushBackNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushBackNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushBackNormal();
 						}
 
 						//left
@@ -578,24 +652,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushLeftNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushLeftNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushLeftNormal();
 
 							verticesStone.push_back(blCoordX);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushLeftNormal();
 						}
 
 						//right
@@ -605,24 +683,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushRightNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ);
 							texturesStone.push_back(1.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushRightNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY+CUBE_SIZE);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(1.0);
+							normalsStone.pushRightNormal();
 
 							verticesStone.push_back(blCoordX+CUBE_SIZE);
 							verticesStone.push_back(blCoordY);
 							verticesStone.push_back(blCoordZ+CUBE_SIZE);
 							texturesStone.push_back(0.0);
 							texturesStone.push_back(0.0);
+							normalsStone.pushRightNormal();
 						}
 						break;
 					case SAND:
@@ -633,24 +715,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushUpNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushUpNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushUpNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushUpNormal();
 						}
 
 						//down
@@ -660,24 +746,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushDownNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushDownNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushDownNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushDownNormal();
 						}
 
 						//front
@@ -687,24 +777,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushFrontNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushFrontNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushFrontNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushFrontNormal();
 						}
 
 						//back
@@ -714,24 +808,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushBackNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushBackNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushBackNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushBackNormal();
 						}
 
 						//left
@@ -741,24 +839,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushLeftNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushBackNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushBackNormal();
 
 							verticesSand.push_back(blCoordX);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushBackNormal();
 						}
 
 						//right
@@ -768,24 +870,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushRightNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ);
 							texturesSand.push_back(1.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushRightNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY+CUBE_SIZE);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(1.0);
+							normalsSand.pushRightNormal();
 
 							verticesSand.push_back(blCoordX+CUBE_SIZE);
 							verticesSand.push_back(blCoordY);
 							verticesSand.push_back(blCoordZ+CUBE_SIZE);
 							texturesSand.push_back(0.0);
 							texturesSand.push_back(0.0);
+							normalsSand.pushRightNormal();
 						}
 						break;
 					case WATER:
@@ -796,24 +902,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushUpNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushUpNormal();
 									
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushUpNormal();
 									
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushUpNormal();
 						}
 
 						//down
@@ -823,24 +933,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushDownNormal();
 									
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushDownNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushDownNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushDownNormal();
 						}
 
 						//front
@@ -850,24 +964,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushFrontNormal();
 									
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushFrontNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushFrontNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushFrontNormal();
 						}
 
 						//back
@@ -877,24 +995,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushBackNormal();
 	
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushBackNormal();
 		
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushBackNormal();
 			
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushBackNormal();
 						}
 
 						//left
@@ -904,24 +1026,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushLeftNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushLeftNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushLeftNormal();
 									
 							verticesWater.push_back(blCoordX);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushLeftNormal();
 						}
 
 						//right
@@ -931,24 +1057,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushRightNormal();
 									
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ);
 							texturesWater.push_back(1.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushRightNormal();
 							
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY+CUBE_SIZE);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(1.0);
+							normalsWater.pushRightNormal();
 									
 							verticesWater.push_back(blCoordX+CUBE_SIZE);
 							verticesWater.push_back(blCoordY);
 							verticesWater.push_back(blCoordZ+CUBE_SIZE);
 							texturesWater.push_back(0.0);
 							texturesWater.push_back(0.0);
+							normalsWater.pushRightNormal();
 						}
 						break;
 					case LEAFS:
@@ -959,24 +1089,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushUpNormal();
 							
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushUpNormal();
 						
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushUpNormal();
 							
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushUpNormal();
 						}
 
 						//down
@@ -986,24 +1120,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushDownNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushDownNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushDownNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushDownNormal();
 						}
 
 						//front
@@ -1013,24 +1151,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushFrontNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushFrontNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushFrontNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushFrontNormal();
 						}
 
 						//back
@@ -1040,24 +1182,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushBackNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushBackNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushBackNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushBackNormal();
 						}
 
 						//left
@@ -1067,24 +1213,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushLeftNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushLeftNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushLeftNormal();
 
 							verticesLeafs.push_back(blCoordX);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushLeftNormal();
 						}
 
 						//right
@@ -1094,24 +1244,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushRightNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ);
 							texturesLeafs.push_back(1.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushRightNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(1.0);
+							normalsLeafs.pushRightNormal();
 
 							verticesLeafs.push_back(blCoordX+CUBE_SIZE);
 							verticesLeafs.push_back(blCoordY);
 							verticesLeafs.push_back(blCoordZ+CUBE_SIZE);
 							texturesLeafs.push_back(0.0);
 							texturesLeafs.push_back(0.0);
+							normalsLeafs.pushRightNormal();
 						}
 						break;
 					case WOOD:
@@ -1122,24 +1276,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushUpNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushUpNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushUpNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushUpNormal();
 						}
 
 						//down
@@ -1149,24 +1307,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushDownNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushDownNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushDownNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushDownNormal();
 						}
 
 						//front
@@ -1176,24 +1338,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushFrontNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushFrontNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushFrontNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushFrontNormal();
 						}
 
 						//back
@@ -1203,24 +1369,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushBackNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushBackNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushBackNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushBackNormal();
 						}
 
 						//left
@@ -1230,24 +1400,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushLeftNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushLeftNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushLeftNormal();
 
 							verticesWood.push_back(blCoordX);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushLeftNormal();
 						}
 
 						//right
@@ -1257,24 +1431,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushRightNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ);
 							texturesWood.push_back(1.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushRightNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY+CUBE_SIZE);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(1.0);
+							normalsWood.pushRightNormal();
 
 							verticesWood.push_back(blCoordX+CUBE_SIZE);
 							verticesWood.push_back(blCoordY);
 							verticesWood.push_back(blCoordZ+CUBE_SIZE);
 							texturesWood.push_back(0.0);
 							texturesWood.push_back(0.0);
+							normalsWood.pushRightNormal();
 						}
 						break;
 					case SNOW:
@@ -1285,24 +1463,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushUpNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushUpNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushUpNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushUpNormal();
 						}
 
 						//down
@@ -1312,24 +1494,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushDownNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushDownNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushDownNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushDownNormal();
 						}
 
 						//front
@@ -1339,24 +1525,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushFrontNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushFrontNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushFrontNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushFrontNormal();
 						}
 
 						//back
@@ -1366,24 +1556,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushBackNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushBackNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushBackNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushBackNormal();
 						}
 
 						//left
@@ -1393,24 +1587,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushLeftNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushLeftNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushLeftNormal();
 
 							verticesSnow.push_back(blCoordX);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushLeftNormal();
 						}
 
 						//right
@@ -1420,24 +1618,28 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushRightNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ);
 							texturesSnow.push_back(1.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushRightNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY+CUBE_SIZE);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(1.0);
+							normalsSnow.pushRightNormal();
 
 							verticesSnow.push_back(blCoordX+CUBE_SIZE);
 							verticesSnow.push_back(blCoordY);
 							verticesSnow.push_back(blCoordZ+CUBE_SIZE);
 							texturesSnow.push_back(0.0);
 							texturesSnow.push_back(0.0);
+							normalsSnow.pushRightNormal();
 						}
 						break;
 					}
@@ -1476,6 +1678,35 @@ VBOBoxTransferInfo updateGraphicsArraysForChunk(SimpleArray<GLint,SIZE_OF_VERTIC
 
 		for(int i=0; i < verticesSnow.getElementsCount(); ++i)
 			verticesFinal.push_back(verticesSnow[i]);
+
+		//заполним normalsFinal
+
+		for(int i=0; i < normalsDirt.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsDirt[i]);
+
+		for(int i=0; i < normalsGrassTop.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsGrassTop[i]);
+
+		for(int i=0; i < normalsGrassSide.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsGrassSide[i]);
+
+		for(int i=0; i < normalsStone.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsStone[i]);
+
+		for(int i=0; i < normalsSand.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsSand[i]);
+
+		for(int i=0; i < normalsWater.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsWater[i]);
+
+		for(int i=0; i < normalsLeafs.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsLeafs[i]);
+
+		for(int i=0; i < normalsWood.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsWood[i]);
+
+		for(int i=0; i < normalsSnow.getElementsCount(); ++i)
+			normalsFinal.push_back(normalsSnow[i]);
 
 		//заполним texturesFinal
 

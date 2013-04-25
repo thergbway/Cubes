@@ -16,6 +16,7 @@ public:
 	bool sPressed;
 	bool dPressed;
 	bool spacePressed;
+	bool leftShiftPressed;
 	bool leftCtrlPressed;
 
 	int deltaX;

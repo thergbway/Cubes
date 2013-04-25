@@ -17,6 +17,7 @@ public:
 	VBOBoxTransferInfo* vBOBoxTransferInfo;//тут храним количества точек и размеры смещений
 	//массивы вершинных и текстурных кооринат (финальные)
 	SimpleArray<GLint, SIZE_OF_VERTICES_FINAL_ARRAYS> verticesFinal;
+	SimpleArray<GLint, SIZE_OF_VERTICES_FINAL_ARRAYS> normalsFinal;
 	SimpleArray<GLfloat, SIZE_OF_TEXTURES_FINAL_ARRAYS> texturesFinal;
 	int coordAppChX;//координаты соответствующего чанка
 	int coordAppChZ;//координаты соответствующего чанка
